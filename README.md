@@ -2,4 +2,4 @@
 
 This is an epic Sowa Project which will probably not be finished
 
-Ahh shit ITP goes brr
+Pad: https://pad.riseup.net/p/arch.exe-keep
