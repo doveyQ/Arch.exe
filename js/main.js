@@ -1,4 +1,3 @@
-
 //movement
 const objecttomove = document.getElementById("objecttomove");
 const movementSpeed = 20;
