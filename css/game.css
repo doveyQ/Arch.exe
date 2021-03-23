@@ -1,3 +1,16 @@
 /*
 use for game pls
 */
+
+#mainCanvas  {
+    display: inline;
+    border: solid white;
+    width: 1000px;
+    height: 1000px;
+    background-color: aqua;
+}
+
+#canvas-container {
+    text-align: center;
+    padding: 50px;
+}

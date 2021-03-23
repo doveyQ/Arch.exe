@@ -1,3 +1,16 @@
 /*
 use for frontend pls
 */
+
+body {
+    background-color: black;
+}
+
+#mainContainer {
+    width: 70em;
+    height: 70em;
+    margin: 0 auto;
+    background-color: grey;
+    padding: 0;
+}
+
