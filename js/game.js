@@ -1,7 +1,6 @@
 //use this for game pls
 
 /* 
-Project: uebung06_klassen_balls
 Last Author:  Teppan Fabian
 Date: 23.03.2021
 */
