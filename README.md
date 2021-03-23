@@ -6,7 +6,7 @@ Pad: https://pad.riseup.net/p/arch.exe-keep
 
 ## !IMPORTANT!
 
-Always use the testing branch and merge later to avoid fucking up the main branch!
+Always use the testing branch and merge later (open pull request) to avoid fucking up the main branch!
 
 ## Ressources: <br>
 GitHub-Tutorial: https://www.youtube.com/watch?v=nhNq2kIvi9s <br>
