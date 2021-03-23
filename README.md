@@ -4,7 +4,7 @@ This is an epic Sowa Project which will probably not be finished
 
 Pad: https://pad.riseup.net/p/arch.exe-keep
 
-##!IMPORTANT!
+## !IMPORTANT!
 
 Always use the testing branch and merge later to avoid fucking up the main branch!
 
