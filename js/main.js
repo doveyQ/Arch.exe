@@ -1,8 +1,8 @@
-//use this for page things appearance
+//use this for page appearance things
 
 /* 
-Last Author:  Teppan Fabian
-Date: 23.03.2021
+Last Author: K1llf0rce
+Date: 25.03.2021
 */
 
 'use strict';

@@ -1,8 +1,8 @@
 //use this for game pls
 
 /* 
-Last Author:  Teppan Fabian
-Date: 23.03.2021
+Last Author: K1llf0rce
+Date: 25.03.2021
 */
 
 'use strict';
@@ -15,7 +15,15 @@ let canvasHeight = cv.height;
 let canvasWidth = cv.width;
 let posX = 925;
 let posY = 925;
-let move = '';
+
+//move variables for each individual axis to increase responsiveness
+let moveU = '';
+let moveD = '';
+let moveL = '';
+let moveR = '';
+
+//global speed adjustment
+let globalSpeed = 10;
 
 //animation loop
 function loop() {
@@ -24,64 +32,54 @@ function loop() {
     cv.height = 1000;
     cv.width = 1000;
     ctx.drawImage(image, posX, posY, 50, 50); //draws image of choice and scales it
-    if (move != 'stop') {
-        keepMoving();
-    } 
+    keepMoving();
     window.requestAnimationFrame(loop);
 }
 
 //adjust position of spaceship according to key events and perform out of border checks
 function keepMoving() {
-    if (move == 'right') {
+    if (moveR == 'right') {
         if ( (posX + image.width) < cv.width) {
-          posX += 5 
-        } else {
-          return
+          posX += globalSpeed;
         }
-    } else if (move == 'left') {
+    } else if (moveL == 'left') {
         if ( (posX + image.width) > image.width) {
-            posX -= 5 
-          } else {
-            return
-          }
-    } else if (move == 'up') {
-        if ( (posY + image.height) > image.height) {
-            posY -= 5 
-          } else {
-            return
-          }
-    } else if (move == 'down') {
+          posX -= globalSpeed;
+        }
+    } else if (moveU == 'up') {
+        if ( (posY + image.height) > cv.height/1.5) { //dont let spaceship move all the way up 
+          posY -= globalSpeed;
+        }
+    } else if (moveD == 'down') {
         if ( (posY + image.height) < cv.height) {
-            posY += 5 
-          } else {
-            return
-          }
+          posY += globalSpeed;
+        }
     }
 }
 
 //if keydown event is triggered, start moving spaceship with keepMoving-function untill keydown event triggers
 document.addEventListener('keydown', function (event) {
   if (event.code == 'ArrowUp') {
-    move = 'up';
+    moveU = 'up';
   } else if (event.code == 'ArrowDown') {
-    move = 'down';
+    moveD = 'down';
   } else if (event.code == 'ArrowLeft') {
-    move = 'left';
+    moveL = 'left';
   } else if (event.code == 'ArrowRight') {
-    move = 'right';
+    moveR = 'right';
   }
 });
 
 //wait for keyup event, if detected set move to "stop" so keepMoving-function doesnt continue
 document.addEventListener('keyup', function (event) {
     if (event.code == 'ArrowUp') {
-      move = 'stop';
+      moveU = '';
     } else if (event.code == 'ArrowDown') {
-      move = 'stop';
+      moveD = '';
     } else if (event.code == 'ArrowLeft') {
-      move = 'stop';
+      moveL = '';
     } else if (event.code == 'ArrowRight') {
-      move = 'stop';
+      moveR = '';
     }
 });
 
