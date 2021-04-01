@@ -9,7 +9,7 @@ Date: 01.04.2021
 let cv = document.getElementById('mainCanvas');
 let ctx = cv.getContext('2d');
 let image = document.getElementById('spaceship');
-cv.height = 925; //  height for canvas
+cv.height = 960; //  height for canvas
 cv.width = 1600; //  width for canvas
 let canvasHeight = cv.height;
 let canvasWidth = cv.width;
@@ -23,13 +23,13 @@ let moveL = '';
 let moveR = '';
 
 //global speed adjustment
-let globalSpeed = 10;
+let globalSpeed = 7;
 
 //animation loop
 function loop() {
   cv = document.getElementById('mainCanvas');
   ctx = cv.getContext('2d');
-  cv.height = 925;
+  cv.height = 960;
   cv.width = 1600;
   ctx.drawImage(image, posX, posY, 50, 50); //draws image of choice and scales it
   keepMoving();

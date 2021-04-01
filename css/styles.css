@@ -1,14 +1,5 @@
 /*
 use for frontend pls
-#aside {
-    grid-area: aside;
-    border: solid;
-    border-color: white;
-    border-radius: 15px;
-    background-color: #232b2b;
-    padding: 1.7em;
-    color: #aab7b8;
-}
 */
 
 body {
@@ -20,7 +11,7 @@ body {
     margin: 0 auto;
     display: grid;
     grid-template-columns: 20% 20% 20% 20% 20%;
-    grid-template-rows: 170px 400px 400px 400px 150px;
+    grid-template-rows: 170px 400px 400px 400px 500px;
     grid-row-gap: 2px;
     grid-template-areas:
         ". head head head ."
@@ -54,6 +45,16 @@ header {
     grid-area: sec;
     border-width: 10px;
     border: solid;
-    border-color: white;
+    border-color: black;
     border-radius: 15px;
+}
+
+#aside {
+    grid-area: aside;
+    border: solid;
+    border-color: black;
+    border-radius: 15px;
+    background-color: #ad2828;
+    padding: 1.7em;
+    color: #aab7b8;
 }
