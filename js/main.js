@@ -1,8 +1,7 @@
-//use this for page appearance things
-
 /* 
 Last Author: K1llf0rce
-Date: 25.03.2021
+Date: 01.04.2021
 */
 
+//exec code in strict mode
 'use strict';
