@@ -1,18 +1,23 @@
-//use this for game pls
-
 /* 
-Last Author: Mercy:3
+Last Author: K1llf0rce
 Date: 01.04.2021
 */
 
+//exec code in strict mode
 'use strict';
+
+//canvas stuff
 let cv = document.getElementById('mainCanvas');
 let ctx = cv.getContext('2d');
-let image = document.getElementById('spaceship');
-cv.height = 925; //  height for canvas
+cv.height = 960; //  height for canvas
 cv.width = 1600; //  width for canvas
 let canvasHeight = cv.height;
 let canvasWidth = cv.width;
+
+//define images
+let image = document.getElementById('spaceship');
+
+//initial position
 let posX = 800;
 let posY = 700;
 
@@ -23,15 +28,15 @@ let moveL = '';
 let moveR = '';
 
 //global speed adjustment
-let globalSpeed = 10;
+let globalSpeed = 7;
 
 //animation loop
 function loop() {
   cv = document.getElementById('mainCanvas');
   ctx = cv.getContext('2d');
-  cv.height = 925;
+  cv.height = 960;
   cv.width = 1600;
-  ctx.drawImage(image, posX, posY, 50, 50); //draws image of choice and scales it
+  ctx.drawImage(image, posX, posY, 60, 60); //draws image of choice and scales it
   keepMoving();
   window.requestAnimationFrame(loop);
 }
@@ -39,19 +44,19 @@ function loop() {
 //adjust position of spaceship according to key events and perform out of border checks
 function keepMoving() {
   if (moveR == 'right') {
-    if ((posX + image.width) < cv.width) {
+    if ((posX + image.width +5) < cv.width) {
       posX += globalSpeed;
     }
   } else if (moveL == 'left') {
-    if ((posX + image.width) > image.width) {
+    if ((posX + image.width -5) > image.width) {
       posX -= globalSpeed;
     }
   } else if (moveU == 'up') {
-    if ((posY + image.height) > cv.height / 1.5) { //dont let spaceship move all the way up 
+    if ((posY + image.height -5) > cv.height / 1.5) { //dont let spaceship move all the way up 
       posY -= globalSpeed;
     }
   } else if (moveD == 'down') {
-    if ((posY + image.height) < cv.height) {
+    if ((posY + image.height +5) < cv.height) {
       posY += globalSpeed;
     }
   }

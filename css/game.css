@@ -1,5 +1,6 @@
-/*
-use for game pls
+/* 
+Last Author: K1llf0rce
+Date: 01.04.2021
 */
 
 #mainCanvas  {
@@ -7,12 +8,13 @@ use for game pls
     border: solid white;
     width: 100%;
     height: 100%;
-    background-color: aqua;
+    background-color: white;
 }
 
 #canvas-container {
     text-align: center;
     padding: 50px;
+    background-color: #ad2828;
 }
 
 #spaceship {
