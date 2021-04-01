@@ -1,20 +1,20 @@
 //use this for game pls
 
 /* 
-Last Author: K1llf0rce
-Date: 25.03.2021
+Last Author: Mercy:3
+Date: 01.04.2021
 */
 
 'use strict';
 let cv = document.getElementById('mainCanvas');
 let ctx = cv.getContext('2d');
 let image = document.getElementById('spaceship');
-cv.height = 1000;  //  height for canvas
-cv.width = 1000;  //  width for canvas
+cv.height = 925;  //  height for canvas
+cv.width = 1600;  //  width for canvas
 let canvasHeight = cv.height;
 let canvasWidth = cv.width;
-let posX = 925;
-let posY = 925;
+let posX = 800;
+let posY = 700;
 
 //move variables for each individual axis to increase responsiveness
 let moveU = '';
@@ -29,8 +29,8 @@ let globalSpeed = 10;
 function loop() {
     cv = document.getElementById('mainCanvas');
     ctx = cv.getContext('2d');
-    cv.height = 1000;
-    cv.width = 1000;
+    cv.height = 925;
+    cv.width = 1600;
     ctx.drawImage(image, posX, posY, 50, 50); //draws image of choice and scales it
     keepMoving();
     window.requestAnimationFrame(loop);

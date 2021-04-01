@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
+
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,15 +8,32 @@
         <link rel="stylesheet" href="css/styles.css">
         <link rel="stylesheet" href="css/game.css">
         <title>ARCH.EXE</title>
-        <img id="spaceship" src="/img/spaceship.png" height="50" width="50" alt="spaceship">
+        <img
+            id="spaceship"
+            src="/img/spaceship.png"
+            height="50"
+            width="50"
+            alt="spaceship">
     </head>
+
     <body>
-        <div id="mainContainer">
-            <div id="canvas-container">
-                <canvas id="mainCanvas"></canvas>
+            <div id="container">
+                <header id="header">
+                    <h1>Arch Invaders</h1>
+                </header>
+                <section id="section">
+                        <div id="mainContainer">
+                            <div id="canvas-container">
+                                <canvas id="mainCanvas"></canvas>
+                            </div>
+                        </div>
+                </section>
+
+                <aside id="aside"></aside>
+
             </div>
-        </div>
         <script src="js/main.js"></script>
         <script src="js/game.js"></script>
     </body>
+
 </html>
