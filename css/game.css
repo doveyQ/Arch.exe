@@ -14,3 +14,7 @@ use for game pls
     text-align: center;
     padding: 50px;
 }
+
+#spaceship {
+    display: none;
+}
