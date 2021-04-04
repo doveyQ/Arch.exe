@@ -13,9 +13,8 @@ body {
     display: grid;
     grid-template-columns: 20% 20% 20% 20% 20%;
     grid-template-rows: 170px 400px 400px 400px 500px;
-    grid-row-gap: 2px;
     grid-template-areas:
-        ". head head head ."
+        "head head head head head"
         "sec sec sec sec sec"
         "sec sec sec sec sec"
         "sec sec sec sec sec"
@@ -23,23 +22,15 @@ body {
 }
 
 #fullbackground {
-    background-image: url();
-    background-repeat: no-repeat;
+    background-color: gray;
 }
 
 header {
     grid-area: head;
-    background-color: #3b444b;
-    border-width: 6px;
+    background-image: url(/img/Header-Logo/arch-exe.jpg);
     border: solid;
-    border-radius: 15px;
     font-size: 2.2em;
     padding-bottom: 1em;
-    border-color: white;
-    text-align: center;
-    color: white;
-    font-family: Georgia, cursive;
-    text-shadow: 8px 8px 16px #000000;
 }
 
 #section {
