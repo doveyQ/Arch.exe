@@ -16,6 +16,7 @@ let canvasWidth = cv.width;
 
 //define images
 let image = document.getElementById('spaceship');
+let imageBullet = document.getElementById('bullet1');
 
 //initial position
 let posX = 800;
@@ -29,6 +30,10 @@ let moveR = '';
 
 //global speed adjustment
 let globalSpeed = 7;
+let globalBulletSpeed = 5;
+
+//bullet array
+let array = [];
 
 //animation loop
 function loop() {
@@ -36,8 +41,14 @@ function loop() {
   ctx = cv.getContext('2d');
   cv.height = 960;
   cv.width = 1600;
+
+  //spaceship movement
   ctx.drawImage(image, posX, posY, 60, 60); //draws image of choice and scales it
   keepMoving();
+  
+  //keep bullets moving
+  bulletMovement();
+
   window.requestAnimationFrame(loop);
 }
 
@@ -59,6 +70,26 @@ function keepMoving() {
     if ((posY + image.height +5) < cv.height) {
       posY += globalSpeed;
     }
+  }
+}
+
+//add bulet movement
+function bulletMovement() {
+  for (let i=0; i < array.length; i++) {
+    ctx.drawImage(imageBullet, array[i].initialPosX, (array[i].initialPosY+array[i].speedY), 20, 20);
+    array[i].speedY -= globalBulletSpeed;
+    if ( (array[i].initialPosY+array[i].speedY) == 0) {
+      array.splice(i, 1); 
+    }
+  }
+}
+
+//class for bullets
+class Bullet {
+  constructor () {
+    this.initialPosX = posX+20; //shift to center
+    this.initialPosY = posY;
+    this.speedY = 0;
   }
 }
 
@@ -85,6 +116,14 @@ document.addEventListener('keyup', function (event) {
     moveL = '';
   } else if (event.code == 'ArrowRight') {
     moveR = '';
+  }
+});
+
+//listen for shoot
+document.addEventListener('keyup', function (event) {
+  if (event.code == 'Space') {
+    let bl1 = new Bullet();
+    array.push(bl1);
   }
 });
 
