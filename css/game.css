@@ -1,6 +1,6 @@
 /* 
 Last Author: K1llf0rce
-Date: 01.04.2021
+Date: 04.04.2021
 */
 
 #mainCanvas  {
@@ -14,7 +14,6 @@ Date: 01.04.2021
 #canvas-container {
     text-align: center;
     padding: 50px;
-    background-color: #ad2828;
 }
 
 #spaceship, #bullet1 {
