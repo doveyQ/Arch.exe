@@ -28,7 +28,8 @@ let moveD = false;
 let moveL = false;
 let moveR = false;
 let shoot = false;
-let shootInit = true;
+let currentlyShooting = false;
+let reloaded = true;
 
 //global speed adjustment
 let globalSpeed = 6; //spaceship speed (in px per refresh)
@@ -37,6 +38,9 @@ let globalBulletDelay = 100; //delay between each bullet (in ms)
 
 //bullet array
 let array = [];
+
+//dont allow key spamming
+let keyupRun = false;
 
 //animation loop
 function loop() {
@@ -48,9 +52,6 @@ function loop() {
   //spaceship movement
   ctx.drawImage(image, posX, posY, 60, 60); //draws image of choice and scales it
   keepMoving();
-
-  //listen for inital shoot trigger
-  shootCheck();
 
   //keep bullets moving
   bulletMovement();
@@ -83,7 +84,7 @@ function keepMoving() {
   }
 }
 
-function playAudio(audioID){
+function playAudio(audioID) {
   if (audioID == 'shoot') {
     var audio = new Audio('audio/bullet.mp3');
     audio.play();
@@ -91,19 +92,19 @@ function playAudio(audioID){
 }
 
 function shootCheck() {
-  if (shoot == true && shootInit == true) {
+  if (shoot == true && currentlyShooting == false) {
+    currentlyShooting = true;
     generateBullet();
-    shootInit = false;
   }
 }
 
 //generate bullet
 function generateBullet() {
-  if (shoot == true) {
+  if (shoot == true && currentlyShooting == true) {
     let bl1 = new Bullet();
     array.push(bl1);
-    setTimeout(generateBullet, globalBulletDelay);
     playAudio('shoot');
+    setTimeout(generateBullet, globalBulletDelay);
   }
 }
 
@@ -166,17 +167,22 @@ document.addEventListener('keyup', function (event) {
 });
 
 //if keydown event is triggered
-document.addEventListener('keydown', function (event) {
-  if (event.code == 'Space') {
-    shoot = true;
-  }
-});
+if (currentlyShooting == false) {
+  document.addEventListener('keydown', function (event) {
+    if (event.code == 'Space') {
+      shoot = true;
+      shootCheck();
+    }
+  });
+}
 
 //wait for keyup event
 document.addEventListener('keyup', function (event) {
   if (event.code == 'Space') {
     shoot = false;
-    shootInit = true;
+    setTimeout(function () {  //dont allow for key spamming
+      currentlyShooting = false;
+    }, 100);
   }
 });
 
