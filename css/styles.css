@@ -27,7 +27,7 @@ body {
 
 header {
     grid-area: head;
-    background-image: url(/img/Header-Logo/arch-exe.jpg);
+    background-image: url(img/Header-Logo/arch-exe.jpg);
     border: solid;
     font-size: 2.2em;
     padding-bottom: 1em;
