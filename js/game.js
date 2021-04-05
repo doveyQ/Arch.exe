@@ -1,6 +1,6 @@
 /*
 Last Author: K1llf0rce
-Date: 04.04.2021
+Date: 05.04.2021
 */
 
 //exec code in strict mode
@@ -22,20 +22,21 @@ let imageBullet = document.getElementById('bullet1');
 let posX = 800;
 let posY = 700;
 
-//move/shoot variables for each individual axis to increase responsiveness
+//move/shoot booleans
 let moveU = false;
 let moveD = false;
 let moveL = false;
 let moveR = false;
 let shoot = false;
+let shootInit = true;
 
 //global speed adjustment
-let globalSpeed = 7;
-let globalBulletSpeed = 5;
+let globalSpeed = 6; //spaceship speed (in px per refresh)
+let globalBulletSpeed = 8; //bullet speed (in px per refresh)
+let globalBulletDelay = 100; //delay between each bullet (in ms)
 
 //bullet array
 let array = [];
-let shootInit = false;
 
 //animation loop
 function loop() {
@@ -48,8 +49,8 @@ function loop() {
   ctx.drawImage(image, posX, posY, 60, 60); //draws image of choice and scales it
   keepMoving();
 
-  //generate bullets
-  shootCheck()
+  //listen for inital shoot trigger
+  shootCheck();
 
   //keep bullets moving
   bulletMovement();
@@ -79,17 +80,28 @@ function keepMoving() {
   }
 }
 
+function playAudio(audioID){
+  if (audioID == 'shoot') {
+    var audio = new Audio('audio/bullet.mp3');
+    audio.play();
+  }
+}
+
 function shootCheck() {
-  if (shootInit == true) {
-    var shootInterval = setInterval(generateBullet, 500);
+  if (shoot == true && shootInit == true) {
+    generateBullet();
     shootInit = false;
   }
 }
 
 //generate bullet
 function generateBullet() {
-  let bl1 = new Bullet();
-  array.push(bl1);
+  if (shoot == true) {
+    let bl1 = new Bullet();
+    array.push(bl1);
+    setTimeout(generateBullet, globalBulletDelay);
+    playAudio('shoot');
+  }
 }
 
 //add bulet movement
@@ -128,7 +140,6 @@ document.addEventListener('keydown', function (event) {
     moveL = true;
   } else if (event.code == 'ArrowRight') {
     moveR = true;
-    clearInterval(intervalId);
   }
 });
 
@@ -148,7 +159,6 @@ document.addEventListener('keyup', function (event) {
 //if keydown event is triggered
 document.addEventListener('keydown', function (event) {
   if (event.code == 'Space') {
-    shootInit = true;
     shoot = true;
   }
 });
@@ -157,6 +167,7 @@ document.addEventListener('keydown', function (event) {
 document.addEventListener('keyup', function (event) {
   if (event.code == 'Space') {
     shoot = false;
+    shootInit = true;
   }
 });
 
