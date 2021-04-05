@@ -31,22 +31,22 @@ header {
     border: solid;
     font-size: 2.2em;
     padding-bottom: 1em;
+    background-color: #ad2828;
+    border-color: #ad2828;
 }
 
 #section {
     grid-area: sec;
-    border-width: 10px;
     border: solid;
-    border-color: black;
-    border-radius: 15px;
+    background-color: #ad2828;
+    border-color: #ad2828;
 }
 
 #aside {
     grid-area: aside;
     border: solid;
-    border-color: black;
-    border-radius: 15px;
     background-color: #ad2828;
+    border-color: #ad2828;
     padding: 1.7em;
     color: #aab7b8;
 }
