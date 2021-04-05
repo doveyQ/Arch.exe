@@ -65,15 +65,18 @@ function keepMoving() {
     if ((posX + image.width + 5) < cv.width) {
       posX += globalSpeed;
     }
-  } else if (moveL == true) {
+  }
+  if (moveL == true) {
     if ((posX + image.width - 5) > image.width) {
       posX -= globalSpeed;
     }
-  } else if (moveU == true) {
+  }
+  if (moveU == true) {
     if ((posY + image.height - 5) > cv.height / 1.5) { //dont let spaceship move all the way up
       posY -= globalSpeed;
     }
-  } else if (moveD == true) {
+  }
+  if (moveD == true) {
     if ((posY + image.height + 5) < cv.height) {
       posY += globalSpeed;
     }
@@ -134,11 +137,14 @@ class Bullet {
 document.addEventListener('keydown', function (event) {
   if (event.code == 'ArrowUp') {
     moveU = true;
-  } else if (event.code == 'ArrowDown') {
+  }
+  if (event.code == 'ArrowDown') {
     moveD = true;
-  } else if (event.code == 'ArrowLeft') {
+  }
+  if (event.code == 'ArrowLeft') {
     moveL = true;
-  } else if (event.code == 'ArrowRight') {
+  }
+  if (event.code == 'ArrowRight') {
     moveR = true;
   }
 });
@@ -147,11 +153,14 @@ document.addEventListener('keydown', function (event) {
 document.addEventListener('keyup', function (event) {
   if (event.code == 'ArrowUp') {
     moveU = false;
-  } else if (event.code == 'ArrowDown') {
+  }
+  if (event.code == 'ArrowDown') {
     moveD = false;
-  } else if (event.code == 'ArrowLeft') {
+  }
+  if (event.code == 'ArrowLeft') {
     moveL = false;
-  } else if (event.code == 'ArrowRight') {
+  }
+  if (event.code == 'ArrowRight') {
     moveR = false;
   }
 });
