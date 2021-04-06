@@ -1,6 +1,6 @@
 /*
 Last Author: K1llf0rce
-Date: 05.04.2021
+Date: 06.04.2021
 */
 
 //exec code in strict mode
@@ -17,6 +17,7 @@ let canvasWidth = cv.width;
 //define images
 let image = document.getElementById('spaceship');
 let imageBullet = document.getElementById('bullet1');
+let imageEnemy = document.getElementById('enemy');
 
 //initial position
 let posX = 800;
@@ -30,14 +31,17 @@ let moveR = false;
 let shoot = false;
 let currentlyShooting = false;
 let reloaded = true;
+let addEnemy = true;
 
 //global speed adjustment
 let globalSpeed = 6; //spaceship speed (in px per refresh)
 let globalBulletSpeed = 8; //bullet speed (in px per refresh)
 let globalBulletDelay = 100; //delay between each bullet (in ms)
+let globalEnemyDelay = 2000; //delay between enemy generation (in ms)
 
-//bullet array
-let array = [];
+//arrays
+let bulletArray = [];
+let enemyArray = [];
 
 //dont allow key spamming
 let keyupRun = false;
@@ -55,12 +59,14 @@ function loop() {
 
   //keep bullets moving
   bulletMovement();
+  
+  //keep enemies moving
+  enemyMovement()
 
   window.requestAnimationFrame(loop);
 }
 
-// adjust position of spaceship according to key events and perform out of
-// border checks
+// adjust position of spaceship according to key events and perform out of border checks
 function keepMoving() {
   if (moveR == true) {
     if ((posX + image.width + 5) < cv.width) {
@@ -84,6 +90,7 @@ function keepMoving() {
   }
 }
 
+//exec audio event
 function playAudio(audioID) {
   if (audioID == 'shoot') {
     var audio = new Audio('audio/bullet.mp3');
@@ -91,6 +98,7 @@ function playAudio(audioID) {
   }
 }
 
+//check if shoot is triggered
 function shootCheck() {
   if (shoot == true && currentlyShooting == false) {
     currentlyShooting = true;
@@ -102,25 +110,58 @@ function shootCheck() {
 function generateBullet() {
   if (shoot == true && currentlyShooting == true) {
     let bl1 = new Bullet();
-    array.push(bl1);
+    bulletArray.push(bl1);
     playAudio('shoot');
     setTimeout(generateBullet, globalBulletDelay);
   }
 }
 
-//add bulet movement
+//bullet movement
 function bulletMovement() {
-  for (let i = 0; i < array.length; i++) {
-    ctx.drawImage(
-      imageBullet,
-      array[i].initialPosX,
-      (array[i].initialPosY + array[i].speedY),
-      20,
-      20
-    );
-    array[i].speedY -= globalBulletSpeed;
-    if ((array[i].initialPosY + array[i].speedY) == 0) {
-      array.splice(i, 1);
+  for (let i = 0; i < bulletArray.length; i++) {
+    if ((bulletArray[i].bPosY) < 0) {
+      bulletArray.splice(i, 1);
+    } else {
+      bulletArray[i].move();
+    }
+  }
+}
+
+//enemy movement
+function generateEnemy() {
+  let en1 = new Enemy();
+  enemyArray.push(en1);
+  setInterval(function() {
+    let en1 = new Enemy();
+    enemyArray.push(en1);
+  }, globalEnemyDelay);
+}
+
+//enemy movement
+function enemyMovement() {
+  for (let i = 0; i < enemyArray.length; i++) {
+    if (collision(enemyArray[i].ePosX, enemyArray[i].ePosY) == true) {
+      enemyArray.splice(i, 1);
+    } else {
+      if ((enemyArray[i].ePosX + imageEnemy.width) > cv.width) {
+        enemyArray[i].movementX = -1;
+        enemyArray[i].ePosY += 80;
+      }
+      if ((enemyArray[i].ePosX) < 0) {
+        enemyArray[i].movementX = 1;
+        enemyArray[i].ePosY += 80;
+      }
+      enemyArray[i].move();
+    }
+  }
+}
+
+//check for collisions with bullets
+function collision(X,Y) {
+  for (let i = 0; i < bulletArray.length; i++) {
+    if ( bulletArray[i].bPosX < X+60 && bulletArray[i].bPosX > X && bulletArray[i].bPosY < Y+60 && bulletArray[i].bPosY > Y) {
+      bulletArray.splice(i, 1);
+      return true;
     }
   }
 }
@@ -128,9 +169,37 @@ function bulletMovement() {
 //class for bullets
 class Bullet {
   constructor() {
-    this.initialPosX = posX + 20; //shift to center
-    this.initialPosY = posY;
-    this.speedY = 0;
+    this.bPosX = posX + 20; //shift to center
+    this.bPosY = posY;
+  }
+  move() {
+    ctx.drawImage(
+      imageBullet,
+      this.bPosX,
+      this.bPosY,
+      20,
+      20
+    );
+    this.bPosY -= globalBulletSpeed;
+  }
+}
+
+//class for enemies
+class Enemy {
+  constructor() {
+    this.ePosX = 80;
+    this.ePosY = 80;
+    this.movementX = 1;
+  }
+  move() {
+    ctx.drawImage(
+      imageEnemy,
+      this.ePosX,
+      this.ePosY,
+      60,
+      60
+    );
+    this.ePosX += this.movementX;
   }
 }
 
@@ -188,3 +257,4 @@ document.addEventListener('keyup', function (event) {
 
 //start animation loop
 loop();
+generateEnemy();
