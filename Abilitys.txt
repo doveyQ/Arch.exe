@@ -1,35 +1,35 @@
 Ideas for ingame items/upgrades/enemies:
     
     Bulles_:
-        One big bullet
++        One big bullet
         Bullet spam/rush
         Bullet effects.
-        New bullet types/ other Packet Managers
++        New bullet types/ other Packet Managers
             -Bouncy balls
         
 
     Spaceship_:
-        Speed
-        More Lives
-        More dmg (one shot enemies are to ez)
-        More Spaceship designs (Maybe different Arch Distro Spaceships)
++        Speed
++        More Lives
++        More dmg (one shot enemies are to ez)
++        More Spaceship designs (Maybe different Arch Distro Spaceships)
             -Ult (giant neofetch based on your spaceship)
 
     Collectables_:
-        packages (ingame coins)
-        armor (if hit doesnt count as ingame hit just lose armor)
++        packages (ingame coins)
++        armor (if hit doesnt count as ingame hit just lose armor)
         ...
 
     Enemies_:
-        New designs
-        More hp
-        (Maybe a boss at the lvl end)
-        Special Abilitys(speed, allmost invis[transparent])
++        New designs
++        More hp
++        (Maybe a boss at the lvl end)
++        Special Abilitys(speed, allmost invis[transparent])
 
     Stage Ideas_: 
-        No hit Stage(reach it without getting a hit)
-        Healing stage (mit sowa proved articles)
-        Boss stage
++        No hit Stage(reach it without getting a hit)
++        Healing stage (mit sowa proved articles)
++        Boss stage
 
 
 
