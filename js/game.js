@@ -1,6 +1,6 @@
 /*
 Last Author: K1llf0rce
-Date: 06.04.2021
+Date: 07.04.2021
 */
 
 //exec code in strict mode
@@ -30,7 +30,6 @@ let moveL = false;
 let moveR = false;
 let shoot = false;
 let currentlyShooting = false;
-let reloaded = true;
 let addEnemy = true;
 
 //global speed adjustment
@@ -99,7 +98,7 @@ function playAudio(audioID) {
 }
 
 //check if shoot is triggered
-function shootCheck() {
+function shootInit() {
   if (shoot == true && currentlyShooting == false) {
     currentlyShooting = true;
     generateBullet();
@@ -240,7 +239,7 @@ if (currentlyShooting == false) {
   document.addEventListener('keydown', function (event) {
     if (event.code == 'Space') {
       shoot = true;
-      shootCheck();
+      shootInit();
     }
   });
 }
@@ -249,12 +248,10 @@ if (currentlyShooting == false) {
 document.addEventListener('keyup', function (event) {
   if (event.code == 'Space') {
     shoot = false;
-    setTimeout(function () {  //dont allow for key spamming
-      currentlyShooting = false;
-    }, 100);
+    currentlyShooting = false;
   }
 });
 
 //start animation loop
 loop();
-generateEnemy();
+//generateEnemy();
