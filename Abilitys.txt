@@ -5,6 +5,7 @@ Ideas for ingame items/upgrades/enemies:
         Bullet spam/rush
         Bullet effects.
         New bullet types/ other Packet Managers
+            -Bouncy balls
         
 
     Spaceship_:
