@@ -4,7 +4,7 @@ Date: 05.04.2021
 */
 
 body {
-    background-color: #f51112;
+    background-color: #000000;
 }
 
 #container {
@@ -31,21 +31,22 @@ header {
     border: solid;
     font-size: 2.2em;
     padding-bottom: 1em;
-    background-color: #000000;
+    background-color: #f51112;
     border-color: #f51112;
 }
 
 #section {
     grid-area: sec;
     border: solid;
-    background-color: #ff6a6a;
+    background-color: #990808;
     border-color: #f51112;
+    border-width: 2em;
 }
 
 #aside {
     grid-area: aside;
     border: solid;
-    background-color: #fd3535;
+    background-color: #f31e1e;
     border-color: #f51112;
     padding: 1.7em;
     color: #aab7b8;
