@@ -16,7 +16,7 @@ Date: 04.04.2021
     padding: 50px;
 }
 
-#spaceship, #bullet1 {
+#spaceship, #bullet1, #enemy {
     display: none;
 }
 
