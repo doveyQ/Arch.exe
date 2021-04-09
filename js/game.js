@@ -42,9 +42,6 @@ let globalEnemyDelay = 2000; //delay between enemy generation (in ms)
 let bulletArray = [];
 let enemyArray = [];
 
-//dont allow key spamming
-let keyupRun = false;
-
 //animation loop
 function loop() {
   cv = document.getElementById('mainCanvas');
@@ -53,7 +50,7 @@ function loop() {
   cv.width = 1600;
 
   //spaceship movement
-  ctx.drawImage(image, posX, posY, 60, 60); //draws image of choice and scales it
+  ctx.drawImage(image, archy.posX, archy.posY, 60, 60); //draws image of choice and scales it
   keepMoving();
 
   //keep bullets moving
@@ -68,23 +65,23 @@ function loop() {
 // adjust position of spaceship according to key events and perform out of border checks
 function keepMoving() {
   if (moveR == true) {
-    if ((posX + image.width + 5) < cv.width) {
-      posX += globalSpeed;
+    if ((archy.posX + image.width + 5) < cv.width) {
+      archy.posX += globalSpeed;
     }
   }
   if (moveL == true) {
-    if ((posX + image.width - 5) > image.width) {
-      posX -= globalSpeed;
+    if ((archy.posX + image.width - 5) > image.width) {
+      archy.posX -= globalSpeed;
     }
   }
   if (moveU == true) {
-    if ((posY + image.height - 5) > cv.height / 1.5) { //dont let spaceship move all the way up
-      posY -= globalSpeed;
+    if ((archy.posY + image.height - 5) > cv.height / 1.5) { //dont let spaceship move all the way up
+      archy.posY -= globalSpeed;
     }
   }
   if (moveD == true) {
-    if ((posY + image.height + 5) < cv.height) {
-      posY += globalSpeed;
+    if ((archy.posY + image.height + 5) < cv.height) {
+      archy.posY += globalSpeed;
     }
   }
 }
@@ -168,8 +165,8 @@ function collision(X,Y) {
 //class for bullets
 class Bullet {
   constructor() {
-    this.bPosX = posX + 20; //shift to center
-    this.bPosY = posY;
+    this.bPosX = archy.posX + 20; //shift to center
+    this.bPosY = archy.posY;
   }
   move() {
     ctx.drawImage(
@@ -199,6 +196,13 @@ class Enemy {
       60
     );
     this.ePosX += this.movementX;
+  }
+}
+
+class Spaceship {
+  constructor() {
+    this.posX = 800;
+    this.posY = 800;
   }
 }
 
@@ -252,10 +256,14 @@ document.addEventListener('keyup', function (event) {
   }
 });
 
+//generate new Archy (spaceship)
+let archy = new Spaceship();
+
 //start animation loop
 loop();
-//generateEnemy();
 
+//enemy function for testing
+//generateEnemy();
 
 
 
