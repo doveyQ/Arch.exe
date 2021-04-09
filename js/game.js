@@ -1,6 +1,6 @@
 /*
 Last Author: K1llf0rce
-Date: 07.04.2021
+Date: 08.04.2021
 */
 
 //exec code in strict mode
@@ -48,42 +48,17 @@ function loop() {
   cv.width = 1600;
 
   //spaceship movement
-  ctx.drawImage(image, archy.posX, archy.posY, 60, 60); //draws image of choice and scales it
-  keepMoving();
+  archy.move();
 
   //keep bullets moving
   bulletMovement();
-  
+
   //keep enemies moving
   enemyMovement()
 
   //request loop
   if (stopMainLoop != true) {
     window.requestAnimationFrame(loop);
-  }
-}
-
-// adjust position of spaceship according to key events and perform out of border checks
-function keepMoving() {
-  if (moveR == true) {
-    if ((archy.posX + image.width + 5) < cv.width) {
-      archy.posX += globalSpeed;
-    }
-  }
-  if (moveL == true) {
-    if ((archy.posX + image.width - 5) > image.width) {
-      archy.posX -= globalSpeed;
-    }
-  }
-  if (moveU == true) {
-    if ((archy.posY + image.height - 5) > cv.height / 1.3) { //dont let spaceship move all the way up
-      archy.posY -= globalSpeed;
-    }
-  }
-  if (moveD == true) {
-    if ((archy.posY + image.height + 5) < cv.height) {
-      archy.posY += globalSpeed;
-    }
   }
 }
 
@@ -134,11 +109,11 @@ function bulletMovement() {
   }
 }
 
-//enemy movement
+//enemy generation
 function generateEnemy() {
   let en1 = new Enemy();
   enemyArray.push(en1);
-  setInterval(function() {
+  setInterval(function () {
     let en1 = new Enemy();
     enemyArray.push(en1);
   }, globalEnemyDelay);
@@ -164,9 +139,9 @@ function enemyMovement() {
 }
 
 //check for collisions with bullets
-function collision(X,Y) {
+function collision(X, Y) {
   for (let i = 0; i < bulletArray.length; i++) {
-    if ( bulletArray[i].bPosX < X+60 && bulletArray[i].bPosX > X && bulletArray[i].bPosY < Y+60 && bulletArray[i].bPosY > Y) {
+    if (bulletArray[i].bPosX < X + 60 && bulletArray[i].bPosX > X && bulletArray[i].bPosY < Y + 60 && bulletArray[i].bPosY > Y) {
       bulletArray.splice(i, 1);
       return true;
     }
@@ -210,10 +185,32 @@ class Enemy {
   }
 }
 
+//class for spaceship, namely "archy"
 class Spaceship {
   constructor() {
     this.posX = 800;
     this.posY = 800;
+  }
+  move() {
+    ctx.drawImage(
+      image,
+      archy.posX,
+      archy.posY,
+      60,
+      60
+    );
+    if (moveR == true && (this.posX + image.width + 5) < cv.width) {
+      this.posX += globalSpeed;
+    }
+    if (moveL == true && (this.posX + image.width - 5) > image.width) {
+      this.posX -= globalSpeed;
+    }
+    if (moveU == true && (this.posY + image.height - 5) > cv.height / 1.4) { //dont let spaceship move all the way up
+      this.posY -= globalSpeed;
+    }
+    if (moveD == true && (this.posY + image.height + 5) < cv.height) {
+      this.posY += globalSpeed;
+    }
   }
 }
 
