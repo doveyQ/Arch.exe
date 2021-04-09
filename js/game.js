@@ -6,7 +6,7 @@ Date: 07.04.2021
 //exec code in strict mode
 'use strict';
 
-//canvas stuff
+//canvas
 let cv = document.getElementById('mainCanvas');
 let ctx = cv.getContext('2d');
 cv.height = 960; //  height for canvas
@@ -14,16 +14,12 @@ cv.width = 1600; //  width for canvas
 let canvasHeight = cv.height;
 let canvasWidth = cv.width;
 
-//define images
+//images
 let image = document.getElementById('spaceship');
 let imageBullet = document.getElementById('bullet1');
 let imageEnemy = document.getElementById('enemy');
 
-//initial position
-let posX = 800;
-let posY = 700;
-
-//move/shoot booleans
+//booleans
 let moveU = false;
 let moveD = false;
 let moveL = false;
@@ -31,6 +27,7 @@ let moveR = false;
 let shoot = false;
 let currentlyShooting = false;
 let addEnemy = true;
+let stopMainLoop = false;
 
 //global speed adjustment
 let globalSpeed = 6; //spaceship speed (in px per refresh)
@@ -44,6 +41,7 @@ let enemyArray = [];
 
 //animation loop
 function loop() {
+  //canvas
   cv = document.getElementById('mainCanvas');
   ctx = cv.getContext('2d');
   cv.height = 960;
@@ -59,7 +57,10 @@ function loop() {
   //keep enemies moving
   enemyMovement()
 
-  window.requestAnimationFrame(loop);
+  //request loop
+  if (stopMainLoop != true) {
+    window.requestAnimationFrame(loop);
+  }
 }
 
 // adjust position of spaceship according to key events and perform out of border checks
@@ -75,7 +76,7 @@ function keepMoving() {
     }
   }
   if (moveU == true) {
-    if ((archy.posY + image.height - 5) > cv.height / 1.5) { //dont let spaceship move all the way up
+    if ((archy.posY + image.height - 5) > cv.height / 1.3) { //dont let spaceship move all the way up
       archy.posY -= globalSpeed;
     }
   }
@@ -83,6 +84,16 @@ function keepMoving() {
     if ((archy.posY + image.height + 5) < cv.height) {
       archy.posY += globalSpeed;
     }
+  }
+}
+
+//function to call whenever archy dies (flipflop for mainAnminationLoop)
+function gameOver() {
+  if (stopMainLoop == false) {
+    stopMainLoop = true;
+  } else {
+    stopMainLoop = false;
+    loop();
   }
 }
 
@@ -94,7 +105,7 @@ function playAudio(audioID) {
   }
 }
 
-//check if shoot is triggered
+//initial shoot function
 function shootInit() {
   if (shoot == true && currentlyShooting == false) {
     currentlyShooting = true;
