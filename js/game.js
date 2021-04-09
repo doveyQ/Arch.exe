@@ -1,6 +1,6 @@
 /*
 Last Author: K1llf0rce
-Date: 08.04.2021
+Date: 10.04.2021
 */
 
 //exec code in strict mode
@@ -72,7 +72,7 @@ function gameOver() {
   }
 }
 
-//exec audio event
+//exec audio event, just add if's for extra audio files
 function playAudio(audioID) {
   if (audioID == 'shoot') {
     var audio = new Audio('audio/bullet.mp3');
@@ -80,7 +80,7 @@ function playAudio(audioID) {
   }
 }
 
-//initial shoot function
+//initial shoot function to (hopefully) fix bullet spam (not entirely)
 function shootInit() {
   if (shoot == true && currentlyShooting == false) {
     currentlyShooting = true;
@@ -98,7 +98,7 @@ function generateBullet() {
   }
 }
 
-//bullet movement
+//bullet movement for bullet array
 function bulletMovement() {
   for (let i = 0; i < bulletArray.length; i++) {
     if ((bulletArray[i].bPosY) < 0) {
@@ -119,7 +119,7 @@ function generateEnemy() {
   }, globalEnemyDelay);
 }
 
-//enemy movement
+//enemy movement with collision checks
 function enemyMovement() {
   for (let i = 0; i < enemyArray.length; i++) {
     if (collision(enemyArray[i].ePosX, enemyArray[i].ePosY) == true) {
@@ -214,7 +214,7 @@ class Spaceship {
   }
 }
 
-//if keydown event is triggered
+//event listener to switch move variables on keydown
 document.addEventListener('keydown', function (event) {
   if (event.code == 'ArrowUp') {
     moveU = true;
@@ -230,7 +230,7 @@ document.addEventListener('keydown', function (event) {
   }
 });
 
-//wait for keyup event
+//event listener to reset move variables on keyup
 document.addEventListener('keyup', function (event) {
   if (event.code == 'ArrowUp') {
     moveU = false;
@@ -246,7 +246,7 @@ document.addEventListener('keyup', function (event) {
   }
 });
 
-//if keydown event is triggered
+//event listener to trigger shooting (work in progress for bullet spam)
 if (currentlyShooting == false) {
   document.addEventListener('keydown', function (event) {
     if (event.code == 'Space') {
@@ -256,7 +256,7 @@ if (currentlyShooting == false) {
   });
 }
 
-//wait for keyup event
+//event listener to reset shooting trigger on keyup
 document.addEventListener('keyup', function (event) {
   if (event.code == 'Space') {
     shoot = false;
