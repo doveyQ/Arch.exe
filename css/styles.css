@@ -1,6 +1,6 @@
 /* 
-Last Author: Mercyless
-Date: 05.04.2021
+Last Author: BunBoy22
+Date: 10.04.2021
 */
 
 body {
@@ -9,7 +9,7 @@ body {
 
 #container {
     width: 120em;
-    margin: 0 auto;
+    margin: auto;
     display: grid;
     grid-template-columns: 20% 20% 20% 20% 20%;
     grid-template-rows: 170px 400px 400px 400px 500px;
@@ -31,8 +31,8 @@ header {
     border: solid;
     font-size: 2.2em;
     padding-bottom: 1em;
-    background-color: #f51112;
-    border-color: #f51112;
+    background-color: #ff0000;
+    border-color: #000000;
 }
 
 #section {
@@ -46,7 +46,7 @@ header {
 #aside {
     grid-area: aside;
     border: solid;
-    background-color: #f31e1e;
+    background-color: #5a4343;
     border-color: #f51112;
     padding: 1.7em;
     color: #aab7b8;

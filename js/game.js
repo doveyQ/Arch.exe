@@ -1,12 +1,12 @@
 /*
 Last Author: K1llf0rce
-Date: 07.04.2021
+Date: 10.04.2021
 */
 
 //exec code in strict mode
 'use strict';
 
-//canvas stuff
+//canvas
 let cv = document.getElementById('mainCanvas');
 let ctx = cv.getContext('2d');
 cv.height = 960; //  height for canvas
@@ -14,16 +14,12 @@ cv.width = 1600; //  width for canvas
 let canvasHeight = cv.height;
 let canvasWidth = cv.width;
 
-//define images
+//images
 let image = document.getElementById('spaceship');
 let imageBullet = document.getElementById('bullet1');
 let imageEnemy = document.getElementById('enemy');
 
-//initial position
-let posX = 800;
-let posY = 700;
-
-//move/shoot booleans
+//booleans
 let moveU = false;
 let moveD = false;
 let moveL = false;
@@ -31,6 +27,8 @@ let moveR = false;
 let shoot = false;
 let currentlyShooting = false;
 let addEnemy = true;
+let myLoop
+let currentlyRunning = true;
 
 //global speed adjustment
 let globalSpeed = 6; //spaceship speed (in px per refresh)
@@ -42,54 +40,37 @@ let globalEnemyDelay = 2000; //delay between enemy generation (in ms)
 let bulletArray = [];
 let enemyArray = [];
 
-//dont allow key spamming
-let keyupRun = false;
-
 //animation loop
+myLoop = setInterval(loop, 8);
+
+function stopLoop() {
+  if (currentlyRunning == true) {
+    currentlyRunning = false
+    clearInterval(myLoop);
+  } else {
+    currentlyRunning = true
+    myLoop = setInterval(loop, 8);
+  }
+}
+
 function loop() {
+  //canvas
   cv = document.getElementById('mainCanvas');
   ctx = cv.getContext('2d');
   cv.height = 960;
   cv.width = 1600;
 
   //spaceship movement
-  ctx.drawImage(image, posX, posY, 60, 60); //draws image of choice and scales it
-  keepMoving();
+  archy.move();
 
   //keep bullets moving
   bulletMovement();
-  
+
   //keep enemies moving
   enemyMovement()
-
-  window.requestAnimationFrame(loop);
 }
 
-// adjust position of spaceship according to key events and perform out of border checks
-function keepMoving() {
-  if (moveR == true) {
-    if ((posX + image.width + 5) < cv.width) {
-      posX += globalSpeed;
-    }
-  }
-  if (moveL == true) {
-    if ((posX + image.width - 5) > image.width) {
-      posX -= globalSpeed;
-    }
-  }
-  if (moveU == true) {
-    if ((posY + image.height - 5) > cv.height / 1.5) { //dont let spaceship move all the way up
-      posY -= globalSpeed;
-    }
-  }
-  if (moveD == true) {
-    if ((posY + image.height + 5) < cv.height) {
-      posY += globalSpeed;
-    }
-  }
-}
-
-//exec audio event
+//exec audio event, just add if's for extra audio files
 function playAudio(audioID) {
   if (audioID == 'shoot') {
     var audio = new Audio('audio/bullet.mp3');
@@ -97,7 +78,7 @@ function playAudio(audioID) {
   }
 }
 
-//check if shoot is triggered
+//initial shoot function to (hopefully) fix bullet spam (not entirely)
 function shootInit() {
   if (shoot == true && currentlyShooting == false) {
     currentlyShooting = true;
@@ -107,7 +88,7 @@ function shootInit() {
 
 //generate bullet
 function generateBullet() {
-  if (shoot == true && currentlyShooting == true) {
+  if (shoot == true && currentlyShooting == true && currentlyRunning == true) {
     let bl1 = new Bullet();
     bulletArray.push(bl1);
     playAudio('shoot');
@@ -115,7 +96,7 @@ function generateBullet() {
   }
 }
 
-//bullet movement
+//bullet movement for bullet array
 function bulletMovement() {
   for (let i = 0; i < bulletArray.length; i++) {
     if ((bulletArray[i].bPosY) < 0) {
@@ -126,17 +107,17 @@ function bulletMovement() {
   }
 }
 
-//enemy movement
+//enemy generation
 function generateEnemy() {
   let en1 = new Enemy();
   enemyArray.push(en1);
-  setInterval(function() {
+  setInterval(function () {
     let en1 = new Enemy();
     enemyArray.push(en1);
   }, globalEnemyDelay);
 }
 
-//enemy movement
+//enemy movement with collision checks
 function enemyMovement() {
   for (let i = 0; i < enemyArray.length; i++) {
     if (collision(enemyArray[i].ePosX, enemyArray[i].ePosY) == true) {
@@ -156,9 +137,9 @@ function enemyMovement() {
 }
 
 //check for collisions with bullets
-function collision(X,Y) {
+function collision(X, Y) {
   for (let i = 0; i < bulletArray.length; i++) {
-    if ( bulletArray[i].bPosX < X+60 && bulletArray[i].bPosX > X && bulletArray[i].bPosY < Y+60 && bulletArray[i].bPosY > Y) {
+    if (bulletArray[i].bPosX < X + 60 && bulletArray[i].bPosX > X && bulletArray[i].bPosY < Y + 60 && bulletArray[i].bPosY > Y) {
       bulletArray.splice(i, 1);
       return true;
     }
@@ -168,8 +149,8 @@ function collision(X,Y) {
 //class for bullets
 class Bullet {
   constructor() {
-    this.bPosX = posX + 20; //shift to center
-    this.bPosY = posY;
+    this.bPosX = archy.posX + 20; //shift to center
+    this.bPosY = archy.posY;
   }
   move() {
     ctx.drawImage(
@@ -202,23 +183,54 @@ class Enemy {
   }
 }
 
-//if keydown event is triggered
-document.addEventListener('keydown', function (event) {
-  if (event.code == 'ArrowUp') {
-    moveU = true;
+//class for spaceship, namely "archy"
+class Spaceship {
+  constructor() {
+    this.posX = 800;
+    this.posY = 800;
   }
-  if (event.code == 'ArrowDown') {
-    moveD = true;
+  move() {
+    ctx.drawImage(
+      image,
+      archy.posX,
+      archy.posY,
+      60,
+      60
+    );
+    if (moveR == true && (this.posX + image.width + 5) < cv.width) {
+      this.posX += globalSpeed;
+    }
+    if (moveL == true && (this.posX + image.width - 5) > image.width) {
+      this.posX -= globalSpeed;
+    }
+    if (moveU == true && (this.posY + image.height - 5) > cv.height / 1.4) { //dont let spaceship move all the way up
+      this.posY -= globalSpeed;
+    }
+    if (moveD == true && (this.posY + image.height + 5) < cv.height) {
+      this.posY += globalSpeed;
+    }
   }
-  if (event.code == 'ArrowLeft') {
-    moveL = true;
-  }
-  if (event.code == 'ArrowRight') {
-    moveR = true;
-  }
-});
+}
 
-//wait for keyup event
+//event listener to switch move variables on keydown
+if (currentlyRunning == true) {
+  document.addEventListener('keydown', function (event) {
+    if (event.code == 'ArrowUp') {
+      moveU = true;
+    }
+    if (event.code == 'ArrowDown') {
+      moveD = true;
+    }
+    if (event.code == 'ArrowLeft') {
+      moveL = true;
+    }
+    if (event.code == 'ArrowRight') {
+      moveR = true;
+    }
+  });
+}
+
+//event listener to reset move variables on keyup
 document.addEventListener('keyup', function (event) {
   if (event.code == 'ArrowUp') {
     moveU = false;
@@ -234,7 +246,7 @@ document.addEventListener('keyup', function (event) {
   }
 });
 
-//if keydown event is triggered
+//event listener to trigger shooting (work in progress for bullet spam)
 if (currentlyShooting == false) {
   document.addEventListener('keydown', function (event) {
     if (event.code == 'Space') {
@@ -244,7 +256,7 @@ if (currentlyShooting == false) {
   });
 }
 
-//wait for keyup event
+//event listener to reset shooting trigger on keyup
 document.addEventListener('keyup', function (event) {
   if (event.code == 'Space') {
     shoot = false;
@@ -252,10 +264,18 @@ document.addEventListener('keyup', function (event) {
   }
 });
 
-//start animation loop
-loop();
-//generateEnemy();
+//event listener to stop/resume game
+document.addEventListener('keydown', function (event) {
+  if (event.code == 'KeyG') {
+    stopLoop();
+  }
+});
 
+//generate new Archy (spaceship)
+let archy = new Spaceship();
+
+//enemy function for testing
+//generateEnemy();
 
 
 
