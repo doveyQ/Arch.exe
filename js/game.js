@@ -27,7 +27,8 @@ let moveR = false;
 let shoot = false;
 let currentlyShooting = false;
 let addEnemy = true;
-let stopMainLoop = false;
+let myLoop
+let currentlyRunning = true;
 
 //global speed adjustment
 let globalSpeed = 6; //spaceship speed (in px per refresh)
@@ -40,6 +41,18 @@ let bulletArray = [];
 let enemyArray = [];
 
 //animation loop
+myLoop = setInterval(loop, 8);
+
+function stopLoop() {
+  if (currentlyRunning == true) {
+    currentlyRunning = false
+    clearInterval(myLoop);
+  } else {
+    currentlyRunning = true
+    myLoop = setInterval(loop, 8);
+  }
+}
+
 function loop() {
   //canvas
   cv = document.getElementById('mainCanvas');
@@ -55,21 +68,6 @@ function loop() {
 
   //keep enemies moving
   enemyMovement()
-
-  //request loop
-  if (stopMainLoop != true) {
-    window.requestAnimationFrame(loop);
-  }
-}
-
-//function to call whenever archy dies (flipflop for mainAnminationLoop)
-function gameOver() {
-  if (stopMainLoop == false) {
-    stopMainLoop = true;
-  } else {
-    stopMainLoop = false;
-    loop();
-  }
 }
 
 //exec audio event, just add if's for extra audio files
@@ -90,7 +88,7 @@ function shootInit() {
 
 //generate bullet
 function generateBullet() {
-  if (shoot == true && currentlyShooting == true) {
+  if (shoot == true && currentlyShooting == true && currentlyRunning == true) {
     let bl1 = new Bullet();
     bulletArray.push(bl1);
     playAudio('shoot');
@@ -215,20 +213,22 @@ class Spaceship {
 }
 
 //event listener to switch move variables on keydown
-document.addEventListener('keydown', function (event) {
-  if (event.code == 'ArrowUp') {
-    moveU = true;
-  }
-  if (event.code == 'ArrowDown') {
-    moveD = true;
-  }
-  if (event.code == 'ArrowLeft') {
-    moveL = true;
-  }
-  if (event.code == 'ArrowRight') {
-    moveR = true;
-  }
-});
+if (currentlyRunning == true) {
+  document.addEventListener('keydown', function (event) {
+    if (event.code == 'ArrowUp') {
+      moveU = true;
+    }
+    if (event.code == 'ArrowDown') {
+      moveD = true;
+    }
+    if (event.code == 'ArrowLeft') {
+      moveL = true;
+    }
+    if (event.code == 'ArrowRight') {
+      moveR = true;
+    }
+  });
+}
 
 //event listener to reset move variables on keyup
 document.addEventListener('keyup', function (event) {
@@ -264,11 +264,15 @@ document.addEventListener('keyup', function (event) {
   }
 });
 
+//event listener to stop/resume game
+document.addEventListener('keydown', function (event) {
+  if (event.code == 'KeyG') {
+    stopLoop();
+  }
+});
+
 //generate new Archy (spaceship)
 let archy = new Spaceship();
-
-//start animation loop
-loop();
 
 //enemy function for testing
 //generateEnemy();
