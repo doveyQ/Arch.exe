@@ -36,6 +36,7 @@ let globalSpeed = 6; //spaceship speed (in px per refresh)
 let globalBulletSpeed = 8; //bullet speed (in px per refresh)
 let globalBulletDelay = 200; //delay between each bullet (in ms)
 let globalEnemyDelay = 2000; //delay between enemy generation (in ms)
+let globalMovementAdjust;
 
 //arrays
 let bulletArray = [];
@@ -58,11 +59,21 @@ function loop() {
   enemyMovement();
 
   getFPS().then(fps => currentFramerate = fps);
-  console.log(currentFramerate);
+
+  adjustForFramerate()
+  console.log(globalMovementAdjust);
 
   if (currentlyRunning == true) {
     window.requestAnimationFrame(loop);
   }
+}
+
+function adjustForFramerate() {
+  globalMovementAdjust = ( 100 - ( ( currentFramerate * 100 ) / 160 ) + 100 ) * 0.01;
+  globalSpeed = 6 * globalMovementAdjust; //spaceship speed (in px per refresh)
+  globalBulletSpeed = 8 * globalMovementAdjust; //bullet speed (in px per refresh)
+  globalBulletDelay = 200; //delay between each bullet (in ms)
+  globalEnemyDelay = 2000; //delay between enemy generation (in ms)
 }
 
 function gameOver() {
@@ -293,6 +304,7 @@ loop();
 //enemy function for testing
 generateEnemy();
 
+alert(globalMovementAdjust);
 
 
 
