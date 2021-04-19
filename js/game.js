@@ -69,7 +69,7 @@ function loop() {
 }
 
 function adjustForFramerate() {
-  globalMovementAdjust = ( 100 - ( ( currentFramerate * 100 ) / 160 ) + 100 ) * 0.01;
+  globalMovementAdjust = ( 100 - ( ( currentFramerate * 100 ) / 100 ) + 100 ) * 0.01;
   globalSpeed = 6 * globalMovementAdjust; //spaceship speed (in px per refresh)
   globalBulletSpeed = 8 * globalMovementAdjust; //bullet speed (in px per refresh)
   globalBulletDelay = 200; //delay between each bullet (in ms)
@@ -303,8 +303,6 @@ loop();
 
 //enemy function for testing
 generateEnemy();
-
-alert(globalMovementAdjust);
 
 
 
