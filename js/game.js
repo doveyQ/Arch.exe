@@ -24,38 +24,22 @@ let moveU = false;
 let moveD = false;
 let moveL = false;
 let moveR = false;
-let shoot = false;
 let currentlyShooting = false;
 let addEnemy = true;
 let mainLoop;
 let mainBulletLoop;
 let currentlyRunning = true;
+let currentFramerate;
 
 //global speed adjustment
 let globalSpeed = 6; //spaceship speed (in px per refresh)
 let globalBulletSpeed = 8; //bullet speed (in px per refresh)
-let globalBulletDelay = 100; //delay between each bullet (in ms)
+let globalBulletDelay = 200; //delay between each bullet (in ms)
 let globalEnemyDelay = 2000; //delay between enemy generation (in ms)
 
 //arrays
 let bulletArray = [];
 let enemyArray = [];
-
-//animation loop
-mainLoop = setInterval(loop, 8);
-
-//bullet loop
-//mainBulletLoop = setInterval(generateBullet, globalBulletDelay);
-
-function stopLoop() {
-  if (currentlyRunning == true) {
-    currentlyRunning = false
-    clearInterval(mainLoop);
-  } else {
-    currentlyRunning = true
-    mainLoop = setInterval(loop, 8);
-  }
-}
 
 function loop() {
   //canvas
@@ -71,8 +55,35 @@ function loop() {
   bulletMovement();
 
   //keep enemies moving
-  enemyMovement()
+  enemyMovement();
+
+  getFPS().then(fps => currentFramerate = fps);
+  console.log(currentFramerate);
+
+  if (currentlyRunning == true) {
+    window.requestAnimationFrame(loop);
+  }
 }
+
+function gameOver() {
+  if (currentlyRunning == true) {
+    currentlyRunning = false;
+  } else {
+    currentlyRunning = true
+    loop();
+  }
+}
+
+// Function that returns a Promise for the FPS
+let getFPS = () =>
+  new Promise(resolve =>
+    requestAnimationFrame(t1 =>
+      requestAnimationFrame(t2 => resolve(1000 / (t2 - t1)))
+    )
+  )
+
+// Calling the function to get the FPS
+getFPS().then(fps => currentFramerate = fps);
 
 //exec audio event, just add if's for extra audio files
 function playAudio(audioID) {
@@ -110,12 +121,14 @@ function bulletMovement() {
 
 //enemy generation
 function generateEnemy() {
-  let en1 = new Enemy();
+  if (currentlyRunning == true) {
+    let en1 = new Enemy();
   enemyArray.push(en1);
   setInterval(function () {
     let en1 = new Enemy();
     enemyArray.push(en1);
   }, globalEnemyDelay);
+  }
 }
 
 //enemy movement with collision checks
@@ -267,12 +280,15 @@ document.addEventListener('keyup', function (event) {
 //event listener to stop/resume game
 document.addEventListener('keydown', function (event) {
   if (event.code == 'KeyG') {
-    stopLoop();
+    gameOver();
   }
 });
 
 //generate new Archy (spaceship)
 let archy = new Spaceship();
+
+//start loop
+loop();
 
 //enemy function for testing
 generateEnemy();
