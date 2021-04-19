@@ -27,7 +27,8 @@ let moveR = false;
 let shoot = false;
 let currentlyShooting = false;
 let addEnemy = true;
-let myLoop
+let mainLoop;
+let mainBulletLoop;
 let currentlyRunning = true;
 
 //global speed adjustment
@@ -41,15 +42,18 @@ let bulletArray = [];
 let enemyArray = [];
 
 //animation loop
-myLoop = setInterval(loop, 8);
+mainLoop = setInterval(loop, 8);
+
+//bullet loop
+//mainBulletLoop = setInterval(generateBullet, globalBulletDelay);
 
 function stopLoop() {
   if (currentlyRunning == true) {
     currentlyRunning = false
-    clearInterval(myLoop);
+    clearInterval(mainLoop);
   } else {
     currentlyRunning = true
-    myLoop = setInterval(loop, 8);
+    mainLoop = setInterval(loop, 8);
   }
 }
 
@@ -80,20 +84,17 @@ function playAudio(audioID) {
 
 //initial shoot function to (hopefully) fix bullet spam (not entirely)
 function shootInit() {
-  if (shoot == true && currentlyShooting == false) {
+  if (currentlyShooting == false) {
     currentlyShooting = true;
-    generateBullet();
+    mainBulletLoop = setInterval(generateBullet, globalBulletDelay);
   }
 }
 
 //generate bullet
 function generateBullet() {
-  if (shoot == true && currentlyShooting == true && currentlyRunning == true) {
-    let bl1 = new Bullet();
-    bulletArray.push(bl1);
-    playAudio('shoot');
-    setTimeout(generateBullet, globalBulletDelay);
-  }
+  let bl1 = new Bullet();
+  bulletArray.push(bl1);
+  playAudio('shoot');
 }
 
 //bullet movement for bullet array
@@ -246,11 +247,10 @@ document.addEventListener('keyup', function (event) {
   }
 });
 
-//event listener to trigger shooting (work in progress for bullet spam)
+//event listener to trigger shooting
 if (currentlyShooting == false) {
   document.addEventListener('keydown', function (event) {
     if (event.code == 'Space') {
-      shoot = true;
       shootInit();
     }
   });
@@ -259,8 +259,8 @@ if (currentlyShooting == false) {
 //event listener to reset shooting trigger on keyup
 document.addEventListener('keyup', function (event) {
   if (event.code == 'Space') {
-    shoot = false;
     currentlyShooting = false;
+    clearInterval(mainBulletLoop); //fixed bullet spam
   }
 });
 
@@ -275,8 +275,7 @@ document.addEventListener('keydown', function (event) {
 let archy = new Spaceship();
 
 //enemy function for testing
-//generateEnemy();
-
+generateEnemy();
 
 
 
