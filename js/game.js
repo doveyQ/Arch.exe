@@ -24,38 +24,23 @@ let moveU = false;
 let moveD = false;
 let moveL = false;
 let moveR = false;
-let shoot = false;
 let currentlyShooting = false;
 let addEnemy = true;
-let mainLoop;
 let mainBulletLoop;
 let currentlyRunning = true;
+let currentFramerate;
 
 //global speed adjustment
-let globalSpeed = 6; //spaceship speed (in px per refresh)
-let globalBulletSpeed = 8; //bullet speed (in px per refresh)
-let globalBulletDelay = 100; //delay between each bullet (in ms)
-let globalEnemyDelay = 2000; //delay between enemy generation (in ms)
+let globalSpeed; //spaceship speed (in px per refresh)
+let globalEnemySpeed; //enemy speed (in px per refresh)
+let globalBulletSpeed; //bullet speed (in px per refresh)
+let globalBulletDelay; //delay between each bullet (in ms)
+let globalEnemyDelay; //delay between enemy generation (in ms)
+let globalMovementAdjust; //movement speed adjust based on measured FPS
 
 //arrays
 let bulletArray = [];
 let enemyArray = [];
-
-//animation loop
-mainLoop = setInterval(loop, 8);
-
-//bullet loop
-//mainBulletLoop = setInterval(generateBullet, globalBulletDelay);
-
-function stopLoop() {
-  if (currentlyRunning == true) {
-    currentlyRunning = false
-    clearInterval(mainLoop);
-  } else {
-    currentlyRunning = true
-    mainLoop = setInterval(loop, 8);
-  }
-}
 
 function loop() {
   //canvas
@@ -71,8 +56,45 @@ function loop() {
   bulletMovement();
 
   //keep enemies moving
-  enemyMovement()
+  enemyMovement();
+
+  //get FPS and adjust multiplier
+  getFPS().then(fps => currentFramerate = fps);
+  adjustForFramerate();
+
+  if (currentlyRunning == true) {
+    window.requestAnimationFrame(loop);
+  }
 }
+
+//movement is adjusted based on the players screen refresh rate
+function adjustForFramerate() {
+  globalMovementAdjust = ( 100 - ( ( currentFramerate * 88 ) / 100 ) + 100 ) * 0.01; // we calculate the multiplier here
+  globalSpeed = 10 * globalMovementAdjust;
+  globalEnemySpeed = 4 * globalMovementAdjust;
+  globalBulletSpeed = 18 * globalMovementAdjust;
+  globalBulletDelay = 200;
+  globalEnemyDelay = 2000;
+}
+
+//game over function to be called when the game needs to be stopped (things to be stopped must be added in here)
+function gameOver() {
+  if (currentlyRunning == true) {
+    currentlyRunning = false;
+  } else {
+    currentlyRunning = true
+    loop();
+  }
+}
+
+//function that returns the FPS
+let getFPS = () =>
+  new Promise(resolve =>
+    requestAnimationFrame(t1 =>
+      requestAnimationFrame(t2 => resolve(1000 / (t2 - t1)))
+    )
+  )
+getFPS().then(fps => currentFramerate = fps);
 
 //exec audio event, just add if's for extra audio files
 function playAudio(audioID) {
@@ -82,19 +104,25 @@ function playAudio(audioID) {
   }
 }
 
-//initial shoot function to (hopefully) fix bullet spam (not entirely)
+//initial shoot function
 function shootInit() {
   if (currentlyShooting == false) {
+    generateBullet(); //initially call function once to allow for one tapping
+    //this also allows the user to continously tap to shoot faster, although not escalate in the function breaking (might be adjusted later)
+  }
+  if (currentlyShooting == false) {
     currentlyShooting = true;
-    mainBulletLoop = setInterval(generateBullet, globalBulletDelay);
+    mainBulletLoop = setInterval(generateBullet, globalBulletDelay); //to avoid bullet spam call a fixed interval once
   }
 }
 
 //generate bullet
 function generateBullet() {
-  let bl1 = new Bullet();
-  bulletArray.push(bl1);
-  playAudio('shoot');
+  if (currentlyRunning == true) {
+    let bl1 = new Bullet();
+    bulletArray.push(bl1);
+    playAudio('shoot');
+  }
 }
 
 //bullet movement for bullet array
@@ -110,12 +138,14 @@ function bulletMovement() {
 
 //enemy generation
 function generateEnemy() {
-  let en1 = new Enemy();
-  enemyArray.push(en1);
-  setInterval(function () {
+  if (currentlyRunning == true) {
+    let en1 = new Enemy();
+    enemyArray.push(en1);
+    setInterval(function () {
     let en1 = new Enemy();
     enemyArray.push(en1);
   }, globalEnemyDelay);
+  }
 }
 
 //enemy movement with collision checks
@@ -125,11 +155,11 @@ function enemyMovement() {
       enemyArray.splice(i, 1);
     } else {
       if ((enemyArray[i].ePosX + imageEnemy.width) > cv.width) {
-        enemyArray[i].movementX = -1;
+        enemyArray[i].movementX = -globalEnemySpeed;
         enemyArray[i].ePosY += 80;
       }
       if ((enemyArray[i].ePosX) < 0) {
-        enemyArray[i].movementX = 1;
+        enemyArray[i].movementX = globalEnemySpeed;
         enemyArray[i].ePosY += 80;
       }
       enemyArray[i].move();
@@ -170,7 +200,7 @@ class Enemy {
   constructor() {
     this.ePosX = 80;
     this.ePosY = 80;
-    this.movementX = 1;
+    this.movementX = globalEnemySpeed;
   }
   move() {
     ctx.drawImage(
@@ -214,7 +244,7 @@ class Spaceship {
 }
 
 //event listener to switch move variables on keydown
-if (currentlyRunning == true) {
+if (currentlyRunning == true) {  //only allow moving when the game actually runs
   document.addEventListener('keydown', function (event) {
     if (event.code == 'ArrowUp') {
       moveU = true;
@@ -260,23 +290,25 @@ if (currentlyShooting == false) {
 document.addEventListener('keyup', function (event) {
   if (event.code == 'Space') {
     currentlyShooting = false;
-    clearInterval(mainBulletLoop); //fixed bullet spam
+    clearInterval(mainBulletLoop); // clears the interval that was previously called to generate bullets
   }
 });
 
 //event listener to stop/resume game
 document.addEventListener('keydown', function (event) {
   if (event.code == 'KeyG') {
-    stopLoop();
+    gameOver();
   }
 });
 
 //generate new Archy (spaceship)
 let archy = new Spaceship();
 
+//start loop
+loop();
+
 //enemy function for testing
 generateEnemy();
-
 
 
 
