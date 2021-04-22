@@ -51,3 +51,12 @@ header {
     padding: 1.7em;
     color: #aab7b8;
 }
+
+
+section li {
+    font-size: 3em;
+}
+
+section nav h1 {
+    font-size: 4em;
+} 
