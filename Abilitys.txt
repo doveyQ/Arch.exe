@@ -16,8 +16,8 @@ Ideas for ingame items/upgrades/enemies:
             -Ult (giant neofetch based on your spaceship)
 
     Collectables_:
-+        packages (ingame coins)
-+        armor (if hit doesnt count as ingame hit just lose armor)
+-        packages (ingame coins)
+-        armor (if hit doesnt count as ingame hit just lose armor)
         ...
 
     Enemies_:
