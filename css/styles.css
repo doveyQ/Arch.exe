@@ -27,27 +27,36 @@ body {
 
 header {
     grid-area: head;
-    background-image: url(../img/Header-Logo/arch-exe.jpg);
+    background-image: url(../img/Header-Logo/arch-exe-blue.jpg);
     border: solid;
     font-size: 2.2em;
     padding-bottom: 1em;
-    background-color: #ff0000;
+    background-color: #000dff;
     border-color: #000000;
 }
 
 #section {
     grid-area: sec;
     border: solid;
-    background-color: #990808;
-    border-color: #f51112;
+    background-color: #000dff;
+    border-color: #000000;
     border-width: 2em;
 }
 
 #aside {
     grid-area: aside;
     border: solid;
-    background-color: #5a4343;
-    border-color: #f51112;
+    background-color: #000dff;
+    border-color: #000000;
     padding: 1.7em;
     color: #aab7b8;
 }
+
+
+section li {
+    font-size: 3em;
+}
+
+section nav h1 {
+    font-size: 4em;
+} 

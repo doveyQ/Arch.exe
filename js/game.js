@@ -1,6 +1,6 @@
 /*
 Last Author: K1llf0rce
-Date: 10.04.2021
+Date: 28.04.2021
 */
 
 //exec code in strict mode
@@ -26,9 +26,11 @@ let moveL = false;
 let moveR = false;
 let currentlyShooting = false;
 let addEnemy = true;
-let mainBulletLoop;
 let currentlyRunning = true;
+
+//other variables
 let currentFramerate;
+let mainBulletLoop;
 
 //global speed adjustment
 let globalSpeed; //spaceship speed (in px per refresh)
