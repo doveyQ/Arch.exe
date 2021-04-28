@@ -171,10 +171,16 @@ function generateEnemy() {
 
 function generateCollectible() {
   if (currentlyRunning == true) {
-    let col1 = new Collectible();
-    collectibleArray.push(col1);
+    let typeToSpawn = 'shield'
+    let col1;
     setInterval(function () {
-      let col1 = new Collectible();
+      if (typeToSpawn == 'shield') {
+        col1 = new Collectible('shield');
+        typeToSpawn = 'coin';
+      } else {
+        col1 = new Collectible('coin');
+        typeToSpawn = 'shield';
+      }
       collectibleArray.push(col1);
     }, 3000);
   }
@@ -248,19 +254,31 @@ class Enemy {
 
 //class for collectibles
 class Collectible {
-  constructor() {
-    this.cPosX = 430; //shift to center
+  constructor(type) {
+    this.cPosX = Math.floor(Math.random()*1500);
     this.cPosY = 80;
+    this.type = type;
   }
   move() {
-    ctx.drawImage(
-      imageCoin,
-      this.cPosX,
-      this.cPosY,
-      40,
-      40
-    );
-    this.cPosY += globalCollectibleSpeed;
+    if (this.type == 'coin') {
+      ctx.drawImage(
+        imageCoin,
+        this.cPosX,
+        this.cPosY,
+        40,
+        40
+      );
+      this.cPosY += globalCollectibleSpeed;
+    } else if (this.type == 'shield') {
+      ctx.drawImage(
+        imageShield,
+        this.cPosX,
+        this.cPosY,
+        40,
+        40
+      );
+      this.cPosY += globalCollectibleSpeed;
+    }
   }
 }
 
