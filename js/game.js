@@ -1,6 +1,6 @@
 /*
 Last Author: K1llf0rce
-Date: 28.04.2021
+Date: 10.04.2021
 */
 
 //exec code in strict mode
@@ -18,8 +18,6 @@ let canvasWidth = cv.width;
 let image = document.getElementById('spaceship');
 let imageBullet = document.getElementById('bullet1');
 let imageEnemy = document.getElementById('enemy');
-let imageShield = document.getElementById('shield');
-let imageCoin = document.getElementById('coin');
 
 //booleans
 let moveU = false;
@@ -28,11 +26,9 @@ let moveL = false;
 let moveR = false;
 let currentlyShooting = false;
 let addEnemy = true;
-let currentlyRunning = true;
-
-//other variables
-let currentFramerate;
 let mainBulletLoop;
+let currentlyRunning = true;
+let currentFramerate;
 
 //global speed adjustment
 let globalSpeed; //spaceship speed (in px per refresh)
@@ -41,12 +37,10 @@ let globalBulletSpeed; //bullet speed (in px per refresh)
 let globalBulletDelay; //delay between each bullet (in ms)
 let globalEnemyDelay; //delay between enemy generation (in ms)
 let globalMovementAdjust; //movement speed adjust based on measured FPS
-let globalCollectibleSpeed; //collectible speed (in pc per refresh)
 
 //arrays
 let bulletArray = [];
 let enemyArray = [];
-let collectibleArray = [];
 
 function loop() {
   //canvas
@@ -64,9 +58,6 @@ function loop() {
   //keep enemies moving
   enemyMovement();
 
-  //keep collectibles moving
-  collectibleMovement();
-
   //get FPS and adjust multiplier
   getFPS().then(fps => currentFramerate = fps);
   adjustForFramerate();
@@ -82,7 +73,6 @@ function adjustForFramerate() {
   globalSpeed = 10 * globalMovementAdjust;
   globalEnemySpeed = 4 * globalMovementAdjust;
   globalBulletSpeed = 18 * globalMovementAdjust;
-  globalCollectibleSpeed = 8 * globalMovementAdjust;
   globalBulletDelay = 200;
   globalEnemyDelay = 2000;
 }
@@ -146,17 +136,6 @@ function bulletMovement() {
   }
 }
 
-//bullet movement for collectible array
-function collectibleMovement() {
-  for (let i = 0; i < collectibleArray.length; i++) {
-    if ((collectibleArray[i].cPosY) > canvasHeight) {
-      collectibleArray.splice(i, 1);
-    } else {
-      collectibleArray[i].move();
-    }
-  }
-}
-
 //enemy generation
 function generateEnemy() {
   if (currentlyRunning == true) {
@@ -165,24 +144,7 @@ function generateEnemy() {
     setInterval(function () {
     let en1 = new Enemy();
     enemyArray.push(en1);
-    }, globalEnemyDelay);
-  }
-}
-
-function generateCollectible() {
-  if (currentlyRunning == true) {
-    let typeToSpawn = 'shield'
-    let col1;
-    setInterval(function () {
-      if (typeToSpawn == 'shield') {
-        col1 = new Collectible('shield');
-        typeToSpawn = 'coin';
-      } else {
-        col1 = new Collectible('coin');
-        typeToSpawn = 'shield';
-      }
-      collectibleArray.push(col1);
-    }, 3000);
+  }, globalEnemyDelay);
   }
 }
 
@@ -249,36 +211,6 @@ class Enemy {
       60
     );
     this.ePosX += this.movementX;
-  }
-}
-
-//class for collectibles
-class Collectible {
-  constructor(type) {
-    this.cPosX = Math.floor(Math.random()*1500);
-    this.cPosY = 80;
-    this.type = type;
-  }
-  move() {
-    if (this.type == 'coin') {
-      ctx.drawImage(
-        imageCoin,
-        this.cPosX,
-        this.cPosY,
-        40,
-        40
-      );
-      this.cPosY += globalCollectibleSpeed;
-    } else if (this.type == 'shield') {
-      ctx.drawImage(
-        imageShield,
-        this.cPosX,
-        this.cPosY,
-        40,
-        40
-      );
-      this.cPosY += globalCollectibleSpeed;
-    }
   }
 }
 
@@ -377,9 +309,6 @@ loop();
 
 //enemy function for testing
 generateEnemy();
-
-//collectible generation
-generateCollectible()
 
 
 
