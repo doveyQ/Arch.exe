@@ -34,6 +34,9 @@ let currentlyRunning = true;
 let currentFramerate;
 let mainBulletLoop;
 
+//counter variables
+let DogeCoins = 0;
+
 //global speed adjustment
 let globalSpeed; //spaceship speed (in px per refresh)
 let globalEnemySpeed; //enemy speed (in px per refresh)
@@ -83,7 +86,7 @@ function adjustForFramerate() {
   globalEnemySpeed = 4 * globalMovementAdjust;
   globalBulletSpeed = 18 * globalMovementAdjust;
   globalCollectibleSpeed = 8 * globalMovementAdjust;
-  globalBulletDelay = 50;
+  globalBulletDelay = 200;
   globalEnemyDelay = 2000;
 }
 
@@ -152,6 +155,11 @@ function collectibleMovement() {
     if ((collectibleArray[i].posY) > canvasHeight) {
       collectibleArray.splice(i, 1);
     } else if (collision(collectibleArray[i].posX, collectibleArray[i].posY, archy, 50, false)) {
+      if (collectibleArray[i].type == 'shield') {
+        archy.hp += 10;
+      } else if (collectibleArray[i].type == 'coin') {
+        DogeCoins += 10
+      }
       collectibleArray.splice(i, 1);
     } else {
       collectibleArray[i].move();
