@@ -83,7 +83,7 @@ function adjustForFramerate() {
   globalEnemySpeed = 4 * globalMovementAdjust;
   globalBulletSpeed = 18 * globalMovementAdjust;
   globalCollectibleSpeed = 8 * globalMovementAdjust;
-  globalBulletDelay = 200;
+  globalBulletDelay = 50;
   globalEnemyDelay = 2000;
 }
 
@@ -151,7 +151,7 @@ function collectibleMovement() {
   for (let i = 0; i < collectibleArray.length; i++) {
     if ((collectibleArray[i].posY) > canvasHeight) {
       collectibleArray.splice(i, 1);
-    } else if (collision(archy.posX, archy.posY, collectibleArray, 60, true)) {
+    } else if (collision(collectibleArray[i].posX, collectibleArray[i].posY, archy, 50, false)) {
       collectibleArray.splice(i, 1);
     } else {
       collectibleArray[i].move();
@@ -208,13 +208,16 @@ function enemyMovement() {
 }
 
 //check for collisions with bullets
-function collision(X, Y, array, hitboxOffset, isArray) {
-  if (isArray == true) {
+function collision(X, Y, array, hitboxOffset, singleObject) {
+  if (singleObject == true) {
     for (let i = 0; i < array.length; i++) {
-      if (array[i].posX < X + hitboxOffset && array[i].posX > X && array[i].posY < Y + hitboxOffset && array[i].posY > Y) {
-        array.splice(i, 1);
+      if (array[i].posX < X + hitboxOffset && array[i].posX > X - hitboxOffset/2 && array[i].posY < Y + hitboxOffset && array[i].posY > Y - hitboxOffset/2) {
         return true;
       }
+    }
+  } else {
+    if (X < array.posX + hitboxOffset && X > array.posX - hitboxOffset/2 && Y < array.posY + hitboxOffset && Y > array.posY - hitboxOffset/2) {
+      return true;
     }
   }
 }
@@ -291,6 +294,7 @@ class Spaceship {
   constructor() {
     this.posX = 800;
     this.posY = 800;
+    this.hp = 100;
   }
   move() {
     ctx.drawImage(
