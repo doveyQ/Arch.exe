@@ -151,8 +151,7 @@ function collectibleMovement() {
   for (let i = 0; i < collectibleArray.length; i++) {
     if ((collectibleArray[i].posY) > canvasHeight) {
       collectibleArray.splice(i, 1);
-    } else if (collision) {
-      alert('lvlup');
+    } else if (collision(archy.posX, archy.posY, collectibleArray, 60, true)) {
       collectibleArray.splice(i, 1);
     } else {
       collectibleArray[i].move();
@@ -192,7 +191,7 @@ function generateCollectible() {
 //enemy movement with collision checks
 function enemyMovement() {
   for (let i = 0; i < enemyArray.length; i++) {
-    if (collision(enemyArray[i].posX, enemyArray[i].posY, bulletArray) == true) {
+    if (collision(enemyArray[i].posX, enemyArray[i].posY, bulletArray, 60, true) == true) {
       enemyArray.splice(i, 1);
     } else {
       if ((enemyArray[i].posX + imageEnemy.width) > cv.width) {
@@ -209,11 +208,13 @@ function enemyMovement() {
 }
 
 //check for collisions with bullets
-function collision(X, Y, array) {
-  for (let i = 0; i < array.length; i++) {
-    if (array[i].posX < X + 60 && array[i].posX > X && array[i].posY < Y + 60 && array[i].posY > Y) {
-      array.splice(i, 1);
-      return true;
+function collision(X, Y, array, hitboxOffset, isArray) {
+  if (isArray == true) {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i].posX < X + hitboxOffset && array[i].posX > X && array[i].posY < Y + hitboxOffset && array[i].posY > Y) {
+        array.splice(i, 1);
+        return true;
+      }
     }
   }
 }
