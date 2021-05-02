@@ -179,6 +179,7 @@ function generateEnemy() {
   }
 }
 
+//collectible generation
 function generateCollectible() {
   if (currentlyRunning == true) {
     let typeToSpawn = 'shield'
@@ -215,7 +216,7 @@ function enemyMovement() {
   }
 }
 
-//check for collisions with bullets
+//check for collisions
 function collision(X, Y, array, hitboxOffset, singleObject) {
   if (singleObject == true) {
     for (let i = 0; i < array.length; i++) {
