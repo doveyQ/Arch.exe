@@ -4,7 +4,9 @@ Date: 10.04.2021
 */
 
 body {
-    background-color: #000000;
+    /*background-color: red; */
+    background-image: url(../img/background-arcade4.jpg);
+    background-size: cover;
 }
 
 #container {
@@ -22,7 +24,7 @@ body {
 }
 
 #fullbackground {
-    background-color: gray;
+    /*background-color: gray; */
 }
 
 header {
@@ -40,7 +42,7 @@ header {
     border: solid;
     background-color: #000dff;
     border-color: #000000;
-    border-width: 2em;
+    border-width: 8em;
 }
 
 #aside {

@@ -18,6 +18,8 @@ let canvasWidth = cv.width;
 let image = document.getElementById('spaceship');
 let imageBullet = document.getElementById('bullet1');
 let imageEnemy = document.getElementById('enemy');
+let imageShield = document.getElementById('shield');
+let imageCoin = document.getElementById('coin');
 
 //booleans
 let moveU = false;
@@ -32,6 +34,9 @@ let currentlyRunning = true;
 let currentFramerate;
 let mainBulletLoop;
 
+//counter variables
+let DogeCoins = 0;
+
 //global speed adjustment
 let globalSpeed; //spaceship speed (in px per refresh)
 let globalEnemySpeed; //enemy speed (in px per refresh)
@@ -39,10 +44,12 @@ let globalBulletSpeed; //bullet speed (in px per refresh)
 let globalBulletDelay; //delay between each bullet (in ms)
 let globalEnemyDelay; //delay between enemy generation (in ms)
 let globalMovementAdjust; //movement speed adjust based on measured FPS
+let globalCollectibleSpeed; //collectible speed (in pc per refresh)
 
 //arrays
 let bulletArray = [];
 let enemyArray = [];
+let collectibleArray = [];
 
 function loop() {
   //canvas
@@ -60,6 +67,9 @@ function loop() {
   //keep enemies moving
   enemyMovement();
 
+  //keep collectibles moving
+  collectibleMovement();
+
   //get FPS and adjust multiplier
   getFPS().then(fps => currentFramerate = fps);
   adjustForFramerate();
@@ -75,6 +85,7 @@ function adjustForFramerate() {
   globalSpeed = 10 * globalMovementAdjust;
   globalEnemySpeed = 4 * globalMovementAdjust;
   globalBulletSpeed = 18 * globalMovementAdjust;
+  globalCollectibleSpeed = 8 * globalMovementAdjust;
   globalBulletDelay = 200;
   globalEnemyDelay = 2000;
 }
@@ -130,10 +141,28 @@ function generateBullet() {
 //bullet movement for bullet array
 function bulletMovement() {
   for (let i = 0; i < bulletArray.length; i++) {
-    if ((bulletArray[i].bPosY) < 0) {
+    if ((bulletArray[i].posY) < 0) {
       bulletArray.splice(i, 1);
     } else {
       bulletArray[i].move();
+    }
+  }
+}
+
+//bullet movement for collectible array
+function collectibleMovement() {
+  for (let i = 0; i < collectibleArray.length; i++) {
+    if ((collectibleArray[i].posY) > canvasHeight) {
+      collectibleArray.splice(i, 1);
+    } else if (collision(collectibleArray[i].posX, collectibleArray[i].posY, archy, 50, false)) {
+      if (collectibleArray[i].type == 'shield') {
+        archy.hp += 10;
+      } else if (collectibleArray[i].type == 'coin') {
+        DogeCoins += 10
+      }
+      collectibleArray.splice(i, 1);
+    } else {
+      collectibleArray[i].move();
     }
   }
 }
@@ -146,34 +175,57 @@ function generateEnemy() {
     setInterval(function () {
     let en1 = new Enemy();
     enemyArray.push(en1);
-  }, globalEnemyDelay);
+    }, globalEnemyDelay);
+  }
+}
+
+//collectible generation
+function generateCollectible() {
+  if (currentlyRunning == true) {
+    let typeToSpawn = 'shield'
+    let colType;
+    setInterval(function () {
+      if (typeToSpawn == 'shield') {
+        colType = new Collectible('shield');
+        typeToSpawn = 'coin';
+      } else {
+        colType = new Collectible('coin');
+        typeToSpawn = 'shield';
+      }
+      collectibleArray.push(colType);
+    }, 3000);
   }
 }
 
 //enemy movement with collision checks
 function enemyMovement() {
   for (let i = 0; i < enemyArray.length; i++) {
-    if (collision(enemyArray[i].ePosX, enemyArray[i].ePosY) == true) {
+    if (collision(enemyArray[i].posX, enemyArray[i].posY, bulletArray, 60, true) == true) {
       enemyArray.splice(i, 1);
     } else {
-      if ((enemyArray[i].ePosX + imageEnemy.width) > cv.width) {
+      if ((enemyArray[i].posX + imageEnemy.width) > cv.width) {
         enemyArray[i].movementX = -globalEnemySpeed;
-        enemyArray[i].ePosY += 80;
+        enemyArray[i].posY += 80;
       }
-      if ((enemyArray[i].ePosX) < 0) {
+      if ((enemyArray[i].posX) < 0) {
         enemyArray[i].movementX = globalEnemySpeed;
-        enemyArray[i].ePosY += 80;
+        enemyArray[i].posY += 80;
       }
       enemyArray[i].move();
     }
   }
 }
 
-//check for collisions with bullets
-function collision(X, Y) {
-  for (let i = 0; i < bulletArray.length; i++) {
-    if (bulletArray[i].bPosX < X + 60 && bulletArray[i].bPosX > X && bulletArray[i].bPosY < Y + 60 && bulletArray[i].bPosY > Y) {
-      bulletArray.splice(i, 1);
+//check for collisions
+function collision(X, Y, array, hitboxOffset, singleObject) {
+  if (singleObject == true) {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i].posX < X + hitboxOffset && array[i].posX > X - hitboxOffset/2 && array[i].posY < Y + hitboxOffset && array[i].posY > Y - hitboxOffset/2) {
+        return true;
+      }
+    }
+  } else {
+    if (X < array.posX + hitboxOffset && X > array.posX - hitboxOffset/2 && Y < array.posY + hitboxOffset && Y > array.posY - hitboxOffset/2) {
       return true;
     }
   }
@@ -182,37 +234,67 @@ function collision(X, Y) {
 //class for bullets
 class Bullet {
   constructor() {
-    this.bPosX = archy.posX + 20; //shift to center
-    this.bPosY = archy.posY;
+    this.posX = archy.posX + 20; //shift to center
+    this.posY = archy.posY;
   }
   move() {
     ctx.drawImage(
       imageBullet,
-      this.bPosX,
-      this.bPosY,
+      this.posX,
+      this.posY,
       20,
       20
     );
-    this.bPosY -= globalBulletSpeed;
+    this.posY -= globalBulletSpeed;
   }
 }
 
 //class for enemies
 class Enemy {
   constructor() {
-    this.ePosX = 80;
-    this.ePosY = 80;
+    this.posX = 80;
+    this.posY = 80;
     this.movementX = globalEnemySpeed;
   }
   move() {
     ctx.drawImage(
       imageEnemy,
-      this.ePosX,
-      this.ePosY,
+      this.posX,
+      this.posY,
       60,
       60
     );
-    this.ePosX += this.movementX;
+    this.posX += this.movementX;
+  }
+}
+
+//class for collectibles
+class Collectible {
+  constructor(type) {
+    this.posX = Math.floor(Math.random()*1500);
+    this.posY = 80;
+    this.type = type;
+  }
+  move() {
+    if (this.type == 'coin') {
+      ctx.drawImage(
+        imageCoin,
+        this.posX,
+        this.posY,
+        40,
+        40
+      );
+      this.posY += globalCollectibleSpeed;
+    } else if (this.type == 'shield') {
+      ctx.drawImage(
+        imageShield,
+        this.posX,
+        this.posY,
+        40,
+        40
+      );
+      this.posY += globalCollectibleSpeed;
+    }
   }
 }
 
@@ -221,6 +303,7 @@ class Spaceship {
   constructor() {
     this.posX = 800;
     this.posY = 800;
+    this.hp = 100;
   }
   move() {
     ctx.drawImage(
@@ -311,6 +394,9 @@ loop();
 
 //enemy function for testing
 generateEnemy();
+
+//collectible generation
+generateCollectible()
 
 
 
