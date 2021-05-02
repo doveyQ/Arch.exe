@@ -114,6 +114,12 @@ function playAudio(audioID) {
   if (audioID == 'shoot') {
     var audio = new Audio('audio/bullet.mp3');
     audio.play();
+  } else if (audioID == 'lvlup') {
+    var audio = new Audio('audio/lvlup.mp3');
+    audio.play();
+  } else if (audioID == 'pickup') {
+    var audio = new Audio('audio/pickup.mp3');
+    audio.play();
   }
 }
 
@@ -157,8 +163,10 @@ function collectibleMovement() {
     } else if (collision(collectibleArray[i].posX, collectibleArray[i].posY, archy, 50, false)) {
       if (collectibleArray[i].type == 'shield') {
         archy.hp += 10;
+        playAudio('lvlup');
       } else if (collectibleArray[i].type == 'coin') {
         DogeCoins += 10
+        playAudio('pickup');
       }
       collectibleArray.splice(i, 1);
     } else {
