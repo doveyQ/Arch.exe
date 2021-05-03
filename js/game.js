@@ -113,13 +113,13 @@ getFPS().then(fps => currentFramerate = fps);
 //exec audio event, just add if's for extra audio files
 function playAudio(audioID) {
   if (audioID == 'shoot') {
-    var audio = new Audio('../audio/bullet.mp3');
+    var audio = new Audio('audio/bullet.mp3');
     audio.play();
   } else if (audioID == 'lvlup') {
-    var audio = new Audio('../audio/lvlup.mp3');
+    var audio = new Audio('audio/lvlup.mp3');
     audio.play();
   } else if (audioID == 'pickup') {
-    var audio = new Audio('../audio/pickup.mp3');
+    var audio = new Audio('audio/pickup.mp3');
     audio.play();
   }
 }
@@ -139,9 +139,9 @@ function shootInit() {
 //generate bullet
 function generateBullet() {
   if (currentlyRunning == true) {
+    playAudio('shoot');
     let bl1 = new Bullet(10);
     bulletArray.push(bl1);
-    playAudio('shoot');
   }
 }
 
