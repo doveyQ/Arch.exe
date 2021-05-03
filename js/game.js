@@ -1,6 +1,6 @@
 /*
 Last Author: K1llf0rce
-Date: 28.04.2021
+Date: 03.05.2021
 */
 
 //exec code in strict mode
@@ -224,7 +224,7 @@ function enemyMovement() {
   }
 }
 
-//check for collisions
+//check for collisions with other objects
 function collision(X, Y, array, hitboxOffset, singleObject) {
   if (singleObject == true) {
     for (let i = 0; i < array.length; i++) {
@@ -242,7 +242,7 @@ function collision(X, Y, array, hitboxOffset, singleObject) {
 //class for bullets
 class Bullet {
   constructor() {
-    this.posX = archy.posX + 20; //shift to center
+    this.posX = archy.posX + 20;
     this.posY = archy.posY;
   }
   move() {
