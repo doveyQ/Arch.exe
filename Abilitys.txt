@@ -15,11 +15,6 @@ Ideas for ingame items/upgrades/enemies:
 +        More Spaceship designs (Maybe different Arch Distro Spaceships)
             -Ult (giant neofetch based on your spaceship)
 
-    Collectables_:
--        packages (ingame coins)
--        armor (if hit doesnt count as ingame hit just lose armor)
-        ...
-
     Enemies_:
 +        New designs
 +        More hp
@@ -30,7 +25,6 @@ Ideas for ingame items/upgrades/enemies:
 +        No hit Stage(reach it without getting a hit)
 +        Healing stage (mit sowa proved articles)
 +        Boss stage
-
 
 
 //Just Ideas <3
