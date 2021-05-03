@@ -36,6 +36,7 @@ let mainBulletLoop;
 
 //counter variables
 let DogeCoins = 0;
+let currentBulletDamage = 0;
 
 //global speed adjustment
 let globalSpeed; //spaceship speed (in px per refresh)
@@ -138,7 +139,7 @@ function shootInit() {
 //generate bullet
 function generateBullet() {
   if (currentlyRunning == true) {
-    let bl1 = new Bullet();
+    let bl1 = new Bullet(10);
     bulletArray.push(bl1);
     playAudio('shoot');
   }
@@ -178,10 +179,10 @@ function collectibleMovement() {
 //enemy generation
 function generateEnemy() {
   if (currentlyRunning == true) {
-    let en1 = new Enemy();
+    let en1 = new Enemy(10);
     enemyArray.push(en1);
     setInterval(function () {
-    let en1 = new Enemy();
+    let en1 = new Enemy(10);
     enemyArray.push(en1);
     }, globalEnemyDelay);
   }
@@ -208,8 +209,13 @@ function generateCollectible() {
 //enemy movement with collision checks
 function enemyMovement() {
   for (let i = 0; i < enemyArray.length; i++) {
-    if (collision(enemyArray[i].posX, enemyArray[i].posY, bulletArray, 60, true) == true) {
-      enemyArray.splice(i, 1);
+    if (collision(enemyArray[i].posX, enemyArray[i].posY, bulletArray, 60, true, true) == true) {
+      enemyArray[i].hp -= currentBulletDamage;
+      if (enemyArray[i].hp == 0) {
+        enemyArray.splice(i, 1);
+      } else {
+        return;
+      }
     } else {
       if ((enemyArray[i].posX + imageEnemy.width) > cv.width) {
         enemyArray[i].movementX = -globalEnemySpeed;
@@ -225,10 +231,12 @@ function enemyMovement() {
 }
 
 //check for collisions with other objects
-function collision(X, Y, array, hitboxOffset, singleObject) {
-  if (singleObject == true) {
+function collision(X, Y, array, hitboxOffset, multiObject, isBullet) {
+  if (multiObject == true && isBullet == true) {
     for (let i = 0; i < array.length; i++) {
       if (array[i].posX < X + hitboxOffset && array[i].posX > X - hitboxOffset/2 && array[i].posY < Y + hitboxOffset && array[i].posY > Y - hitboxOffset/2) {
+        currentBulletDamage = array[i].damage;
+        array.splice(i, 1);
         return true;
       }
     }
@@ -241,9 +249,10 @@ function collision(X, Y, array, hitboxOffset, singleObject) {
 
 //class for bullets
 class Bullet {
-  constructor() {
+  constructor(damage) {
     this.posX = archy.posX + 20;
     this.posY = archy.posY;
+    this.damage = damage;
   }
   move() {
     ctx.drawImage(
@@ -259,9 +268,10 @@ class Bullet {
 
 //class for enemies
 class Enemy {
-  constructor() {
+  constructor(hp) {
     this.posX = 80;
     this.posY = 80;
+    this.hp = hp;
     this.movementX = globalEnemySpeed;
   }
   move() {
