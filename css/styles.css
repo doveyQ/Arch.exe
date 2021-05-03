@@ -43,7 +43,7 @@ header {
     grid-area: sec;
     border: solid;
     border-width: 3.5em;
-    background-image: url(/img/Arch-exe-menu.gif);
+    background-image: url(../img/Arch-exe-menu.gif);
     background-size: cover;
     height: 86%;
 }
