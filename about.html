@@ -1,6 +1,6 @@
 <!--
 Last Author: K1llf0rce
-Date: 03.05.2021
+Date: 09.05.2021
 -->
 
 <!DOCTYPE html>
@@ -11,29 +11,34 @@ Date: 03.05.2021
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/styles.css">
-    <link href="css/bootstrap/bootstrap-reboot.min.css">
-    <script src="js/bootstrap/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
     <title>ARCH.EXE</title>
 </head>
 
 <body>
     <div id="container">
-        <header id="header">
+        <header>
+            <nav class="navbar navbar-expand-sm bg-dark">
+                <div class="collapse navbar-collapse" id="main-navigation">
+                  <ul class="navbar-nav">
+                    <li class="nav-item">
+                      <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="game.html">Game</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="about.html">About</a>
+                    </li>
+                  </ul>
+                </div>
+              </nav>
         </header>
-        <section id="section">
-            <h1>ABOUT</h1>
-            <script src="js/main.js"></script>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed viverra mattis
-                enim vel tincidunt. Nullam fermentum ligula risus, pellentesque malesuada magna
-                fringilla id. Curabitur vitae felis consequat libero pulvinar tincidunt. In hac
-                habitasse platea dictumst. Morbi sodales magna vel libero congue, nec viverra
-                sapien dapibus. Proin pretium tellus purus, nec pretium ante elementum et.
-                Mauris sapien est, dictum in varius eget, maximus eget tellus. Donec sed felis
-                ut nibh vestibulum ullamcorper eget quis ante. Ut nunc nibh, ornare a commodo
-                id, facilisis nec erat. Phasellus vel facilisis magna.
-            </p>
-        </section>
+        <section id="section"></section>
     </div>
+    <script src="js/jquery/jquery-3.3.1.slim.min.js"></script>
+    <script src="js/bootstrap/bootstrap.bundle.js"></script>
+    <script src="js/main.js"></script>
 </body>
 
 </html>

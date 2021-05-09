@@ -1,75 +1,24 @@
 /* 
 Last Author: K1llf0rce
-Date: 03.05.2021
+Date: 09.05.2021
+
+!TEMPORARY FOR DEV WORK AND EASE OF USE!
+
 */
 
 body {
-    /*background-color: red; */
-    background-image: url(../img/Backgrounds/background-arcade4.jpg);
+    background-image: url(../img/codebackground.gif);
     background-size: cover;
+    background-color: green;
+    margin: 0;
+    padding: 0;
 }
 
-#container {
-    width: 50%;
-    margin: auto;
-    display: grid;
-    grid-template-columns: 20% 20% 30% 20% 20%;
-    grid-template-rows: 170px 400px 400px 200px 400px;
-    grid-template-areas:
-        "head head head head head"
-        "sec sec sec sec sec"
-        "sec sec sec sec sec"
-        "aside aside aside aside aside"
-        "footer footer footer footer footer";
+#mainContainer {
+    width: 60em;
+    border: solid black;
+    background-color: grey;
+    margin: 0 auto;
+    margin-top: 20px;
+    padding: 10px;
 }
-
-#fullbackground {
-    /*background-color: gray; */
-}
-
-header {
-    grid-area: head;
-    background-image: url(../img/Header-Logo/arch-exe-transparent.png);
-    background-repeat: no-repeat;
-    background-position-x: center;
-    border: solid;
-    font-size: 2.2em;
-    padding-bottom: 1em;
-    background-color: #505797;
-    border-color: #000000;
-}
-
-#section {
-    grid-area: sec;
-    border: solid;
-    border-width: 3.5em;
-    background-image: url(../img/Arch-exe-menu.gif);
-    background-size: cover;
-    height: 86%;
-}
-
-#aside {
-    grid-area: aside;
-    border: solid;
-    background-color: #373c67;
-    border-color: #000000;
-    padding: 1.7em;
-    color: #aab7b8;
-}
-
-#footer{
-    grid-area: footer;
-    border: solid;
-    background-color: #505797;
-    border-color: #000000;
-    padding: 1.7em;
-    color: #aab7b8;
-}
-
-section li {
-    font-size: 3em;
-}
-
-section nav h1 {
-    font-size: 4em;
-} 
