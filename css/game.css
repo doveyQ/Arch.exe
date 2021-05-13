@@ -24,3 +24,7 @@ Date: 04.04.2021
     width: 120em;
     margin: 0 auto;
 }
+
+#gameScreen {
+    background-color: red;
+}

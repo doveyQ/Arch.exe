@@ -178,14 +178,14 @@ function collectibleMovement() {
 
 //enemy generation
 function generateEnemy() {
+  let en1 = new Enemy(10);
+  enemyArray.push(en1);
+  setInterval(function () {
   if (currentlyRunning == true) {
     let en1 = new Enemy(10);
     enemyArray.push(en1);
-    setInterval(function () {
-    let en1 = new Enemy(10);
-    enemyArray.push(en1);
-    }, globalEnemyDelay);
   }
+  }, globalEnemyDelay);
 }
 
 //collectible generation
@@ -194,14 +194,16 @@ function generateCollectible() {
     let typeToSpawn = 'shield'
     let colType;
     setInterval(function () {
-      if (typeToSpawn == 'shield') {
-        colType = new Collectible('shield');
-        typeToSpawn = 'coin';
-      } else {
-        colType = new Collectible('coin');
-        typeToSpawn = 'shield';
+      if (currentlyRunning == true) {
+        if (typeToSpawn == 'shield') {
+          colType = new Collectible('shield');
+          typeToSpawn = 'coin';
+        } else {
+          colType = new Collectible('coin');
+          typeToSpawn = 'shield';
+        }
+          collectibleArray.push(colType);
       }
-      collectibleArray.push(colType);
     }, 3000);
   }
 }
@@ -399,7 +401,7 @@ document.addEventListener('keyup', function (event) {
 
 //event listener to stop/resume game
 document.addEventListener('keydown', function (event) {
-  if (event.code == 'KeyG') {
+  if (event.code == 'Escape') {
     gameOver();
   }
 });
@@ -416,7 +418,8 @@ generateEnemy();
 //collectible generation
 generateCollectible()
 
-
+//test
+sayHello();
 
 
 
