@@ -121,10 +121,10 @@ function playAudio(audioID) {
     var audio = new Audio('audio/bullet.mp3');
     audio.play();
   } else if (audioID == 'lvlup') {
-    var audio = new Audio('audio/lvlup.mp3');
+    audio = new Audio('audio/lvlup.mp3');
     audio.play();
   } else if (audioID == 'pickup') {
-    var audio = new Audio('audio/pickup.mp3');
+    audio = new Audio('audio/pickup.mp3');
     audio.play();
   }
 }
