@@ -21,6 +21,10 @@ let imageEnemy = document.getElementById('enemy');
 let imageShield = document.getElementById('shield');
 let imageCoin = document.getElementById('coin');
 
+//buttons
+let buttonResume = document.getElementById('gameButtonResume');
+let buttonExit = document.getElementById('gameButtonExit');
+
 //booleans
 let moveU = false;
 let moveD = false;
@@ -91,14 +95,15 @@ function adjustForFramerate() {
   globalEnemyDelay = 2000;
 }
 
-//game over function to be called when the game needs to be stopped (things to be stopped must be added in here)
+//function to be called when the game needs to be stopped (things to be stopped must be added in here)
 function gameOver() {
-  if (currentlyRunning == true) {
-    currentlyRunning = false;
-  } else {
-    currentlyRunning = true
-    loop();
-  }
+  currentlyRunning = false;
+}
+
+//function to resume game
+function gameStart() {
+  currentlyRunning = true
+  loop();
 }
 
 //function that returns the FPS
@@ -126,11 +131,11 @@ function playAudio(audioID) {
 
 //initial shoot function
 function shootInit() {
-  if (currentlyShooting == false) {
+  if (currentlyShooting == false && currentlyRunning == true) {
     generateBullet(); //initially call function once to allow for one tapping
     //this also allows the user to continously tap to shoot faster, although not escalate in the function breaking (might be adjusted later)
   }
-  if (currentlyShooting == false) {
+  if (currentlyShooting == false && currentlyRunning == true) {
     currentlyShooting = true;
     mainBulletLoop = setInterval(generateBullet, globalBulletDelay); //to avoid bullet spam call a fixed interval once
   }
@@ -367,44 +372,65 @@ if (currentlyRunning == true) {  //only allow moving when the game actually runs
 }
 
 //event listener to reset move variables on keyup
-document.addEventListener('keyup', function (event) {
-  if (event.code == 'ArrowUp') {
-    moveU = false;
-  }
-  if (event.code == 'ArrowDown') {
-    moveD = false;
-  }
-  if (event.code == 'ArrowLeft') {
+if (currentlyRunning == true) {
+  document.addEventListener('keyup', function (event) {
+    if (event.code == 'ArrowUp') {
+      moveU = false;
+    }
+    if (event.code == 'ArrowDown') {
+      moveD = false;
+    }
+    if (event.code == 'ArrowLeft') {
     moveL = false;
-  }
-  if (event.code == 'ArrowRight') {
-    moveR = false;
-  }
-});
-
-//event listener to trigger shooting
-if (currentlyShooting == false) {
-  document.addEventListener('keydown', function (event) {
-    if (event.code == 'Space') {
-      shootInit();
+    }
+    if (event.code == 'ArrowRight') {
+      moveR = false;
     }
   });
 }
 
-//event listener to reset shooting trigger on keyup
-document.addEventListener('keyup', function (event) {
-  if (event.code == 'Space') {
-    currentlyShooting = false;
-    clearInterval(mainBulletLoop); // clears the interval that was previously called to generate bullets
-  }
-});
 
-//event listener to stop/resume game
-document.addEventListener('keydown', function (event) {
-  if (event.code == 'Escape') {
-    gameOver();
+//event listener to trigger shooting
+if (currentlyRunning == true) {
+  if (currentlyShooting == false) {
+    document.addEventListener('keydown', function (event) {
+      if (event.code == 'Space') {
+        shootInit();
+      }
+    });
   }
-});
+}
+
+//event listener to reset shooting trigger on keyup
+if (currentlyRunning == true) {
+  document.addEventListener('keyup', function (event) {
+    if (event.code == 'Space') {
+      currentlyShooting = false;
+      clearInterval(mainBulletLoop); // clears the interval that was previously called to generate bullets
+    }
+  });
+}
+
+//button event listener to stop game
+if (currentlyRunning == true) {
+  document.addEventListener('keydown', function (event) {
+    if (event.code == 'Escape') {
+      gameOver();
+      document.getElementById("gameScreen").style.display = 'block';
+    }
+  });
+}
+
+//listener for exit button
+buttonExit.onclick = function() {
+  location.href = '../index.html';
+}
+
+//listener for resume button
+buttonResume.onclick = function() {
+  document.getElementById("gameScreen").style.display = 'none';
+  gameStart();
+}
 
 //generate new Archy (spaceship)
 let archy = new Spaceship();
@@ -416,15 +442,7 @@ loop();
 generateEnemy();
 
 //collectible generation
-generateCollectible()
-
-//test
-sayHello();
-
-
-
-
-
+generateCollectible();
 
 
 
