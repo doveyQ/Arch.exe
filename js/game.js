@@ -33,6 +33,7 @@ let moveR = false;
 let currentlyShooting = false;
 let addEnemy = true;
 let currentlyRunning = true;
+let focused = true;
 
 //other variables
 let currentFramerate;
@@ -79,10 +80,24 @@ function loop() {
   getFPS().then(fps => currentFramerate = fps);
   adjustForFramerate();
 
+  //check if game is still focused, otherwise pause game
+  if (focused == false) {
+    gameOver();
+    document.getElementById("gameScreen").style.display = 'block';
+  }
+
   if (currentlyRunning == true) {
     window.requestAnimationFrame(loop);
   }
 }
+
+//check for focus and unfocus
+window.onblur = function() {
+  focused = false;
+};
+window.onfocus = function() {
+  focused = true;
+};
 
 //movement is adjusted based on the players screen refresh rate
 function adjustForFramerate() {
