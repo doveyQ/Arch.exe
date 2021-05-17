@@ -1,6 +1,6 @@
 /*
 Last Author: K1llf0rce
-Date: 28.04.2021
+Date: 03.05.2021
 */
 
 //exec code in strict mode
@@ -21,6 +21,10 @@ let imageEnemy = document.getElementById('enemy');
 let imageShield = document.getElementById('shield');
 let imageCoin = document.getElementById('coin');
 
+//buttons
+let buttonResume = document.getElementById('gameButtonResume');
+let buttonExit = document.getElementById('gameButtonExit');
+
 //booleans
 let moveU = false;
 let moveD = false;
@@ -29,6 +33,7 @@ let moveR = false;
 let currentlyShooting = false;
 let addEnemy = true;
 let currentlyRunning = true;
+let focused = true;
 
 //other variables
 let currentFramerate;
@@ -36,6 +41,7 @@ let mainBulletLoop;
 
 //counter variables
 let DogeCoins = 0;
+let currentBulletDamage = 0;
 
 //global speed adjustment
 let globalSpeed; //spaceship speed (in px per refresh)
@@ -74,10 +80,24 @@ function loop() {
   getFPS().then(fps => currentFramerate = fps);
   adjustForFramerate();
 
+  //check if game is still focused, otherwise pause game
+  if (focused == false) {
+    gameOver();
+    document.getElementById("gameScreen").style.display = 'block';
+  }
+
   if (currentlyRunning == true) {
     window.requestAnimationFrame(loop);
   }
 }
+
+//check for focus and unfocus
+window.onblur = function() {
+  focused = false;
+};
+window.onfocus = function() {
+  focused = true;
+};
 
 //movement is adjusted based on the players screen refresh rate
 function adjustForFramerate() {
@@ -90,14 +110,15 @@ function adjustForFramerate() {
   globalEnemyDelay = 2000;
 }
 
-//game over function to be called when the game needs to be stopped (things to be stopped must be added in here)
+//function to be called when the game needs to be stopped (things to be stopped must be added in here)
 function gameOver() {
-  if (currentlyRunning == true) {
-    currentlyRunning = false;
-  } else {
-    currentlyRunning = true
-    loop();
-  }
+  currentlyRunning = false;
+}
+
+//function to resume game
+function gameStart() {
+  currentlyRunning = true
+  loop();
 }
 
 //function that returns the FPS
@@ -114,16 +135,22 @@ function playAudio(audioID) {
   if (audioID == 'shoot') {
     var audio = new Audio('audio/bullet.mp3');
     audio.play();
+  } else if (audioID == 'lvlup') {
+    audio = new Audio('audio/lvlup.mp3');
+    audio.play();
+  } else if (audioID == 'pickup') {
+    audio = new Audio('audio/pickup.mp3');
+    audio.play();
   }
 }
 
 //initial shoot function
 function shootInit() {
-  if (currentlyShooting == false) {
+  if (currentlyShooting == false && currentlyRunning == true) {
     generateBullet(); //initially call function once to allow for one tapping
     //this also allows the user to continously tap to shoot faster, although not escalate in the function breaking (might be adjusted later)
   }
-  if (currentlyShooting == false) {
+  if (currentlyShooting == false && currentlyRunning == true) {
     currentlyShooting = true;
     mainBulletLoop = setInterval(generateBullet, globalBulletDelay); //to avoid bullet spam call a fixed interval once
   }
@@ -132,9 +159,9 @@ function shootInit() {
 //generate bullet
 function generateBullet() {
   if (currentlyRunning == true) {
-    let bl1 = new Bullet();
-    bulletArray.push(bl1);
     playAudio('shoot');
+    let bl1 = new Bullet(10);
+    bulletArray.push(bl1);
   }
 }
 
@@ -157,8 +184,10 @@ function collectibleMovement() {
     } else if (collision(collectibleArray[i].posX, collectibleArray[i].posY, archy, 50, false)) {
       if (collectibleArray[i].type == 'shield') {
         archy.hp += 10;
+        playAudio('lvlup');
       } else if (collectibleArray[i].type == 'coin') {
         DogeCoins += 10
+        playAudio('pickup');
       }
       collectibleArray.splice(i, 1);
     } else {
@@ -169,14 +198,14 @@ function collectibleMovement() {
 
 //enemy generation
 function generateEnemy() {
+  let en1 = new Enemy(10);
+  enemyArray.push(en1);
+  setInterval(function () {
   if (currentlyRunning == true) {
-    let en1 = new Enemy();
+    let en1 = new Enemy(10);
     enemyArray.push(en1);
-    setInterval(function () {
-    let en1 = new Enemy();
-    enemyArray.push(en1);
-    }, globalEnemyDelay);
   }
+  }, globalEnemyDelay);
 }
 
 //collectible generation
@@ -185,14 +214,16 @@ function generateCollectible() {
     let typeToSpawn = 'shield'
     let colType;
     setInterval(function () {
-      if (typeToSpawn == 'shield') {
-        colType = new Collectible('shield');
-        typeToSpawn = 'coin';
-      } else {
-        colType = new Collectible('coin');
-        typeToSpawn = 'shield';
+      if (currentlyRunning == true) {
+        if (typeToSpawn == 'shield') {
+          colType = new Collectible('shield');
+          typeToSpawn = 'coin';
+        } else {
+          colType = new Collectible('coin');
+          typeToSpawn = 'shield';
+        }
+          collectibleArray.push(colType);
       }
-      collectibleArray.push(colType);
     }, 3000);
   }
 }
@@ -200,8 +231,13 @@ function generateCollectible() {
 //enemy movement with collision checks
 function enemyMovement() {
   for (let i = 0; i < enemyArray.length; i++) {
-    if (collision(enemyArray[i].posX, enemyArray[i].posY, bulletArray, 60, true) == true) {
-      enemyArray.splice(i, 1);
+    if (collision(enemyArray[i].posX, enemyArray[i].posY, bulletArray, 60, true, true) == true) {
+      enemyArray[i].hp -= currentBulletDamage;
+      if (enemyArray[i].hp == 0) {
+        enemyArray.splice(i, 1);
+      } else {
+        return;
+      }
     } else {
       if ((enemyArray[i].posX + imageEnemy.width) > cv.width) {
         enemyArray[i].movementX = -globalEnemySpeed;
@@ -216,11 +252,13 @@ function enemyMovement() {
   }
 }
 
-//check for collisions
-function collision(X, Y, array, hitboxOffset, singleObject) {
-  if (singleObject == true) {
+//check for collisions with other objects
+function collision(X, Y, array, hitboxOffset, multiObject, isBullet) {
+  if (multiObject == true && isBullet == true) {
     for (let i = 0; i < array.length; i++) {
       if (array[i].posX < X + hitboxOffset && array[i].posX > X - hitboxOffset/2 && array[i].posY < Y + hitboxOffset && array[i].posY > Y - hitboxOffset/2) {
+        currentBulletDamage = array[i].damage;
+        array.splice(i, 1);
         return true;
       }
     }
@@ -233,9 +271,10 @@ function collision(X, Y, array, hitboxOffset, singleObject) {
 
 //class for bullets
 class Bullet {
-  constructor() {
-    this.posX = archy.posX + 20; //shift to center
+  constructor(damage) {
+    this.posX = archy.posX + 20;
     this.posY = archy.posY;
+    this.damage = damage;
   }
   move() {
     ctx.drawImage(
@@ -251,9 +290,10 @@ class Bullet {
 
 //class for enemies
 class Enemy {
-  constructor() {
+  constructor(hp) {
     this.posX = 80;
     this.posY = 80;
+    this.hp = hp;
     this.movementX = globalEnemySpeed;
   }
   move() {
@@ -347,44 +387,65 @@ if (currentlyRunning == true) {  //only allow moving when the game actually runs
 }
 
 //event listener to reset move variables on keyup
-document.addEventListener('keyup', function (event) {
-  if (event.code == 'ArrowUp') {
-    moveU = false;
-  }
-  if (event.code == 'ArrowDown') {
-    moveD = false;
-  }
-  if (event.code == 'ArrowLeft') {
+if (currentlyRunning == true) {
+  document.addEventListener('keyup', function (event) {
+    if (event.code == 'ArrowUp') {
+      moveU = false;
+    }
+    if (event.code == 'ArrowDown') {
+      moveD = false;
+    }
+    if (event.code == 'ArrowLeft') {
     moveL = false;
-  }
-  if (event.code == 'ArrowRight') {
-    moveR = false;
-  }
-});
-
-//event listener to trigger shooting
-if (currentlyShooting == false) {
-  document.addEventListener('keydown', function (event) {
-    if (event.code == 'Space') {
-      shootInit();
+    }
+    if (event.code == 'ArrowRight') {
+      moveR = false;
     }
   });
 }
 
-//event listener to reset shooting trigger on keyup
-document.addEventListener('keyup', function (event) {
-  if (event.code == 'Space') {
-    currentlyShooting = false;
-    clearInterval(mainBulletLoop); // clears the interval that was previously called to generate bullets
-  }
-});
 
-//event listener to stop/resume game
-document.addEventListener('keydown', function (event) {
-  if (event.code == 'KeyG') {
-    gameOver();
+//event listener to trigger shooting
+if (currentlyRunning == true) {
+  if (currentlyShooting == false) {
+    document.addEventListener('keydown', function (event) {
+      if (event.code == 'Space') {
+        shootInit();
+      }
+    });
   }
-});
+}
+
+//event listener to reset shooting trigger on keyup
+if (currentlyRunning == true) {
+  document.addEventListener('keyup', function (event) {
+    if (event.code == 'Space') {
+      currentlyShooting = false;
+      clearInterval(mainBulletLoop); // clears the interval that was previously called to generate bullets
+    }
+  });
+}
+
+//button event listener to stop game
+if (currentlyRunning == true) {
+  document.addEventListener('keydown', function (event) {
+    if (event.code == 'Escape') {
+      gameOver();
+      document.getElementById("gameScreen").style.display = 'block';
+    }
+  });
+}
+
+//listener for exit button
+buttonExit.onclick = function() {
+  location.href = 'index.html';
+}
+
+//listener for resume button
+buttonResume.onclick = function() {
+  document.getElementById("gameScreen").style.display = 'none';
+  gameStart();
+}
 
 //generate new Archy (spaceship)
 let archy = new Spaceship();
@@ -396,14 +457,7 @@ loop();
 generateEnemy();
 
 //collectible generation
-generateCollectible()
-
-
-
-
-
-
-
+generateCollectible();
 
 
 
