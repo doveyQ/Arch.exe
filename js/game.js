@@ -438,7 +438,7 @@ if (currentlyRunning == true) {
 
 //listener for exit button
 buttonExit.onclick = function() {
-  location.href = '../index.html';
+  location.href = 'index.html';
 }
 
 //listener for resume button
