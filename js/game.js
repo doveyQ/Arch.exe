@@ -31,7 +31,6 @@ let moveD = false;
 let moveL = false;
 let moveR = false;
 let currentlyShooting = false;
-let addEnemy = true;
 let currentlyRunning = true;
 let focused = true;
 
@@ -186,7 +185,7 @@ function collectibleMovement() {
         archy.hp += 10;
         playAudio('lvlup');
       } else if (collectibleArray[i].type == 'coin') {
-        DogeCoins += 10
+        DogeCoins = DogeCoins + 10;
         playAudio('pickup');
       }
       collectibleArray.splice(i, 1);
