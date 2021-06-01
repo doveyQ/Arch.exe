@@ -9,8 +9,8 @@ Date: 03.05.2021
 //canvas
 let cv = document.getElementById('mainCanvas');
 let ctx = cv.getContext('2d');
-cv.height = 960; //  height for canvas
-cv.width = 1600; //  width for canvas
+cv.height = 960;
+cv.width = 1600;
 let canvasHeight = cv.height;
 let canvasWidth = cv.width;
 
@@ -37,10 +37,13 @@ let focused = true;
 //other variables
 let currentFramerate;
 let mainBulletLoop;
+let mainEnemyLoop;
+let mainCollectibleLoop;
 
 //counter variables
 let DogeCoins = 0;
 let currentBulletDamage = 0;
+let playerScore = 0;
 
 //global speed adjustment
 let globalSpeed; //spaceship speed (in px per refresh)
@@ -50,6 +53,8 @@ let globalBulletDelay; //delay between each bullet (in ms)
 let globalEnemyDelay; //delay between enemy generation (in ms)
 let globalMovementAdjust; //movement speed adjust based on measured FPS
 let globalCollectibleSpeed; //collectible speed (in pc per refresh)
+let globalCollectibleDelay; //delay between collectible generation (in ms)
+let globalScoreLevel = 10; //amount of points to be gained from enemies
 
 //arrays
 let bulletArray = [];
@@ -81,7 +86,7 @@ function loop() {
 
   //check if game is still focused, otherwise pause game
   if (focused == false) {
-    gameOver();
+    gameStop();
     document.getElementById("gameScreen").style.display = 'block';
   }
 
@@ -105,19 +110,24 @@ function adjustForFramerate() {
   globalEnemySpeed = 4 * globalMovementAdjust;
   globalBulletSpeed = 18 * globalMovementAdjust;
   globalCollectibleSpeed = 8 * globalMovementAdjust;
-  globalBulletDelay = 200;
+  globalBulletDelay = 70;
   globalEnemyDelay = 2000;
+  globalCollectibleDelay = 3000
 }
 
 //function to be called when the game needs to be stopped (things to be stopped must be added in here)
-function gameOver() {
+function gameStop() {
   currentlyRunning = false;
+  clearInterval(mainEnemyLoop);
+  clearInterval(mainCollectibleLoop);
 }
 
 //function to resume game
 function gameStart() {
   currentlyRunning = true
   loop();
+  mainEnemyLoop = setInterval(generateEnemy, globalEnemyDelay);
+  mainCollectibleLoop = setInterval(generateCollectible, globalEnemyDelay);
 }
 
 //function that returns the FPS
@@ -180,7 +190,7 @@ function collectibleMovement() {
   for (let i = 0; i < collectibleArray.length; i++) {
     if ((collectibleArray[i].posY) > canvasHeight) {
       collectibleArray.splice(i, 1);
-    } else if (collision(collectibleArray[i].posX, collectibleArray[i].posY, archy, 50, false)) {
+    } else if (collision(collectibleArray[i].posX, collectibleArray[i].posY, archy, 50, false, false) == true) {
       if (collectibleArray[i].type == 'shield') {
         archy.hp += 10;
         playAudio('lvlup');
@@ -197,34 +207,22 @@ function collectibleMovement() {
 
 //enemy generation
 function generateEnemy() {
-  let en1 = new Enemy(10);
-  enemyArray.push(en1);
-  setInterval(function () {
-  if (currentlyRunning == true) {
     let en1 = new Enemy(10);
     enemyArray.push(en1);
-  }
-  }, globalEnemyDelay);
 }
 
 //collectible generation
 function generateCollectible() {
-  if (currentlyRunning == true) {
-    let typeToSpawn = 'shield'
-    let colType;
-    setInterval(function () {
-      if (currentlyRunning == true) {
-        if (typeToSpawn == 'shield') {
-          colType = new Collectible('shield');
-          typeToSpawn = 'coin';
-        } else {
-          colType = new Collectible('coin');
-          typeToSpawn = 'shield';
-        }
-          collectibleArray.push(colType);
-      }
-    }, 3000);
+  let typeToSpawn = 'shield'
+  let colType;
+  if (typeToSpawn == 'shield') {
+    colType = new Collectible('shield');
+    typeToSpawn = 'coin';
+  } else {
+    colType = new Collectible('coin');
+    typeToSpawn = 'shield';
   }
+  collectibleArray.push(colType);
 }
 
 //enemy movement with collision checks
@@ -232,8 +230,9 @@ function enemyMovement() {
   for (let i = 0; i < enemyArray.length; i++) {
     if (collision(enemyArray[i].posX, enemyArray[i].posY, bulletArray, 60, true, true) == true) {
       enemyArray[i].hp -= currentBulletDamage;
-      if (enemyArray[i].hp == 0) {
+      if (Number(enemyArray[i].hp) == 0) {
         enemyArray.splice(i, 1);
+        playerScore = playerScore + globalScoreLevel;
       } else {
         return;
       }
@@ -252,8 +251,8 @@ function enemyMovement() {
 }
 
 //check for collisions with other objects
-function collision(X, Y, array, hitboxOffset, multiObject, isBullet) {
-  if (multiObject == true && isBullet == true) {
+function collision(X, Y, array, hitboxOffset, multiObject, isAgainstBullet) {
+  if (multiObject == true && isAgainstBullet == true) {
     for (let i = 0; i < array.length; i++) {
       if (array[i].posX < X + hitboxOffset && array[i].posX > X - hitboxOffset/2 && array[i].posY < Y + hitboxOffset && array[i].posY > Y - hitboxOffset/2) {
         currentBulletDamage = array[i].damage;
@@ -429,7 +428,7 @@ if (currentlyRunning == true) {
 if (currentlyRunning == true) {
   document.addEventListener('keydown', function (event) {
     if (event.code == 'Escape') {
-      gameOver();
+      gameStop();
       document.getElementById("gameScreen").style.display = 'block';
     }
   });
@@ -453,10 +452,10 @@ let archy = new Spaceship();
 loop();
 
 //enemy function for testing
-generateEnemy();
+mainEnemyLoop = setInterval(generateEnemy, globalEnemyDelay);
 
 //collectible generation
-generateCollectible();
+mainCollectibleLoop = setInterval(generateCollectible, globalCollectibleDelay);
 
 
 

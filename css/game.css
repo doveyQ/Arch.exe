@@ -8,6 +8,8 @@ Date: 04.04.2021
     border: solid white;
     background-color: grey;
     margin: 0 auto;
+    width: 1600px;
+    height: 960px;
 }
 
 #spaceship, #bullet1, #enemy, #shield, #coin {
