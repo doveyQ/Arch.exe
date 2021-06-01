@@ -1,6 +1,6 @@
 /* 
 Last Author: K1llf0rce
-Date: 04.04.2021
+Date: 01.06.2021
 */
 
 #mainCanvas  {
@@ -35,7 +35,6 @@ Date: 04.04.2021
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     text-align: center;
-    transition: ease-in 250ms;
 }
 
 #buttonContainer {

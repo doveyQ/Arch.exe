@@ -1,6 +1,6 @@
 /*
 Last Author: K1llf0rce
-Date: 03.05.2021
+Date: 01.06.2021
 */
 
 //exec code in strict mode
@@ -110,7 +110,7 @@ function adjustForFramerate() {
   globalEnemySpeed = 4 * globalMovementAdjust;
   globalBulletSpeed = 18 * globalMovementAdjust;
   globalCollectibleSpeed = 8 * globalMovementAdjust;
-  globalBulletDelay = 70;
+  globalBulletDelay = 300;
   globalEnemyDelay = 2000;
   globalCollectibleDelay = 3000
 }
