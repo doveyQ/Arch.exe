@@ -39,6 +39,7 @@ let currentFramerate;
 let mainBulletLoop;
 let mainEnemyLoop;
 let mainCollectibleLoop;
+let typeToSpawn = 'shield';
 
 //counter variables
 let DogeCoins = 0;
@@ -141,8 +142,9 @@ getFPS().then(fps => currentFramerate = fps);
 
 //exec audio event, just add if's for extra audio files
 function playAudio(audioID) {
+  var audio;
   if (audioID == 'shoot') {
-    var audio = new Audio('audio/bullet.mp3');
+    audio = new Audio('audio/bullet.mp3');
     audio.play();
   } else if (audioID == 'lvlup') {
     audio = new Audio('audio/lvlup.mp3');
@@ -213,7 +215,6 @@ function generateEnemy() {
 
 //collectible generation
 function generateCollectible() {
-  let typeToSpawn = 'shield'
   let colType;
   if (typeToSpawn == 'shield') {
     colType = new Collectible('shield');
@@ -254,14 +255,14 @@ function enemyMovement() {
 function collision(X, Y, array, hitboxOffset, multiObject, isAgainstBullet) {
   if (multiObject == true && isAgainstBullet == true) {
     for (let i = 0; i < array.length; i++) {
-      if (array[i].posX < X + hitboxOffset && array[i].posX > X - hitboxOffset/2 && array[i].posY < Y + hitboxOffset && array[i].posY > Y - hitboxOffset/2) {
+      if ( (array[i].posX - array[i].bulletOffset) < (X + hitboxOffset) && (array[i].posX + array[i].bulletOffset) > X && array[i].posY < Y + hitboxOffset && (array[i].posY + array[i].bulletOffset) > Y) {
         currentBulletDamage = array[i].damage;
         array.splice(i, 1);
         return true;
       }
     }
   } else {
-    if (X < array.posX + hitboxOffset && X > array.posX - hitboxOffset/2 && Y < array.posY + hitboxOffset && Y > array.posY - hitboxOffset/2) {
+    if ( (X - 40) < array.posX + hitboxOffset && (X + 40) > array.posX && Y < array.posY + hitboxOffset && ( Y + 40 ) > array.posY) {
       return true;
     }
   }
@@ -273,6 +274,7 @@ class Bullet {
     this.posX = archy.posX + 20;
     this.posY = archy.posY;
     this.damage = damage;
+    this.bulletOffset = 20;
   }
   move() {
     ctx.drawImage(
@@ -310,7 +312,7 @@ class Enemy {
 class Collectible {
   constructor(type) {
     this.posX = Math.floor(Math.random()*1500);
-    this.posY = 80;
+    this.posY = 20;
     this.type = type;
   }
   move() {
@@ -339,15 +341,15 @@ class Collectible {
 //class for spaceship, namely "archy"
 class Spaceship {
   constructor() {
-    this.posX = 800;
-    this.posY = 800;
+    this.posX = (canvasWidth/2) - 30;
+    this.posY = canvasHeight - 60;
     this.hp = 100;
   }
   move() {
     ctx.drawImage(
       image,
-      archy.posX,
-      archy.posY,
+      this.posX,
+      this.posY,
       60,
       60
     );
@@ -382,10 +384,6 @@ if (currentlyRunning == true) {  //only allow moving when the game actually runs
       moveR = true;
     }
   });
-}
-
-//event listener to reset move variables on keyup
-if (currentlyRunning == true) {
   document.addEventListener('keyup', function (event) {
     if (event.code == 'ArrowUp') {
       moveU = false;
@@ -402,7 +400,6 @@ if (currentlyRunning == true) {
   });
 }
 
-
 //event listener to trigger shooting
 if (currentlyRunning == true) {
   if (currentlyShooting == false) {
@@ -412,10 +409,6 @@ if (currentlyRunning == true) {
       }
     });
   }
-}
-
-//event listener to reset shooting trigger on keyup
-if (currentlyRunning == true) {
   document.addEventListener('keyup', function (event) {
     if (event.code == 'Space') {
       currentlyShooting = false;
