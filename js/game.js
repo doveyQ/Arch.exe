@@ -274,7 +274,6 @@ class Bullet {
     this.posX = archy.posX + 20;
     this.posY = archy.posY;
     this.damage = damage;
-    this.bulletOffset = 20;
   }
   move() {
     ctx.drawImage(
