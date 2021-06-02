@@ -192,7 +192,7 @@ function collectibleMovement() {
   for (let i = 0; i < collectibleArray.length; i++) {
     if ((collectibleArray[i].posY) > canvasHeight) {
       collectibleArray.splice(i, 1);
-    } else if (collision(collectibleArray[i].posX, collectibleArray[i].posY, archy, 50, false, false) == true) {
+    } else if (collision(collectibleArray[i].posX, collectibleArray[i].posY, archy, 50, 40, false, false) == true) {
       if (collectibleArray[i].type == 'shield') {
         archy.hp += 10;
         playAudio('lvlup');
@@ -229,7 +229,7 @@ function generateCollectible() {
 //enemy movement with collision checks
 function enemyMovement() {
   for (let i = 0; i < enemyArray.length; i++) {
-    if (collision(enemyArray[i].posX, enemyArray[i].posY, bulletArray, 60, true, true) == true) {
+    if (collision(enemyArray[i].posX, enemyArray[i].posY, bulletArray, 60, 20, true, true) == true) {
       enemyArray[i].hp -= currentBulletDamage;
       if (Number(enemyArray[i].hp) == 0) {
         enemyArray.splice(i, 1);
@@ -252,17 +252,17 @@ function enemyMovement() {
 }
 
 //check for collisions with other objects
-function collision(X, Y, array, hitboxOffset, multiObject, isAgainstBullet) {
+function collision(X, Y, array, hitboxOffset, hitboxOffset2, multiObject, isAgainstBullet) {
   if (multiObject == true && isAgainstBullet == true) {
     for (let i = 0; i < array.length; i++) {
-      if ( (array[i].posX - array[i].bulletOffset) < (X + hitboxOffset) && (array[i].posX + array[i].bulletOffset) > X && array[i].posY < Y + hitboxOffset && (array[i].posY + array[i].bulletOffset) > Y) {
+      if ( ( array[i].posX - hitboxOffset2 ) < ( X + hitboxOffset ) && ( array[i].posX + hitboxOffset2 ) > X && array[i].posY < ( Y + hitboxOffset ) && ( array[i].posY + hitboxOffset2 ) > Y) {
         currentBulletDamage = array[i].damage;
         array.splice(i, 1);
         return true;
       }
     }
   } else {
-    if ( (X - 40) < array.posX + hitboxOffset && (X + 40) > array.posX && Y < array.posY + hitboxOffset && ( Y + 40 ) > array.posY) {
+    if ( ( X - hitboxOffset2 ) < ( array.posX + hitboxOffset ) && ( X + hitboxOffset2 ) > array.posX && Y < ( array.posY + hitboxOffset ) && ( Y + hitboxOffset2 ) > array.posY) {
       return true;
     }
   }
