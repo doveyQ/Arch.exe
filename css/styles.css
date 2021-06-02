@@ -1,10 +1,11 @@
 /* 
-Last Author: K1llf0rce
-Date: 09.05.2021
+Last Author: Mercy
+Date: 02.06.2021
 
 !TEMPORARY FOR DEV WORK AND EASE OF USE!
 
 */
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
 body {
     background-image: url(../img/codebackground.gif);
@@ -15,10 +16,90 @@ body {
 }
 
 #mainContainer {
-    width: 60em;
-    border: solid black;
-    background-color: grey;
+    width: 100%;
+    height: 100%;
+    background-color: #323232;
     margin: 0 auto;
-    margin-top: 20px;
     padding: 10px;
+    position: fixed;
+    color: white;
+}
+
+.center-h1-nav {
+    margin: 0 auto;
+}
+
+.justify-content-center {
+    font-size: 2em;
+    font-family: 'VT323', sans-serif;
+    letter-spacing: 0.3em;
+    
+}
+.nav-item {
+    margin-right: 2em;
+}
+
+.p-2 {
+    margin-top: 10em;
+    border: solid;
+    border-color: white;
+    width: 20%;
+    background-color: #4f4f4f;
+}
+
+p-2, h1 {
+    color: #141414;
+}
+
+/*  NEW CSS */
+
+#container {
+    display: grid;
+    margin: 0 auto;
+    font-family: Glegoo;
+    color: #ffffff;
+    max-width: 60em;
+    grid-template-columns: none;
+    grid-template-areas: "head"
+                         "nav"
+                         "main-content"
+                         "news"
+                         "further-infos"
+                         "footer";
+}
+#page-footer {
+    display: grid;
+    grid-template-columns: none;
+    grid-template-areas: "footer-left"
+                         "footer-right";
+}
+
+
+/*Hier der Abschnitt für zB tablets im Querformat-Modus*/
+@media only screen and (min-width: 40em){
+    #container {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-areas: "head head head"
+                             "nav nav nav"
+                             "news main-content main-content"
+                             "news main-content main-content"
+                             "further-infos further-infos further-infos"
+                             "footer footer footer";
+    }
+    #page-footer {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-areas: "footer-left footer-right";
+    }
+}
+
+/*Dektop-PC*/
+@media only screen and (min-width: 60em) {
+    #container {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-areas: "head head head head"
+                             "nav nav nav nav"
+                             "news main-content main-content further-infos"
+                             "news main-content main-content further-infos"
+                             "footer footer footer footer";
+    }
 }
