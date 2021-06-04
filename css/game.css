@@ -12,6 +12,24 @@ Date: 01.06.2021
     height: 960px;
 }
 
+#gameInfoBar  {
+    border: solid white;
+    background-color: grey;
+    left: 50%;
+    -ms-transform: translate(-50%);
+    transform: translate(-50%);
+    width: 20em;
+    height: 5em;
+    margin: 0 auto;
+    margin-top: 10px;
+    position: absolute;
+    text-align: center;
+}
+
+#playerScoreOut {
+    font-size: 50px;
+}
+
 #spaceship, #bullet1, #enemy, #shield, #coin {
     display: none;
 }

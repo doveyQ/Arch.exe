@@ -25,6 +25,9 @@ let imageCoin = document.getElementById('coin');
 let buttonResume = document.getElementById('gameButtonResume');
 let buttonExit = document.getElementById('gameButtonExit');
 
+//outputs
+let scoreOutput = document.getElementById('playerScoreOut');
+
 //booleans
 let moveU = false;
 let moveD = false;
@@ -33,6 +36,7 @@ let moveR = false;
 let currentlyShooting = false;
 let currentlyRunning = true;
 let focused = true;
+let isBossStage = false;
 
 //other variables
 let currentFramerate;
@@ -45,6 +49,8 @@ let typeToSpawn = 'shield';
 let DogeCoins = 0;
 let currentBulletDamage = 0;
 let playerScore = 0;
+let globalScoreLevel = 10; //amount of points to be gained from enemies
+let globalLevelNumber = 0;
 
 //global speed adjustment
 let globalSpeed; //spaceship speed (in px per refresh)
@@ -55,12 +61,12 @@ let globalEnemyDelay; //delay between enemy generation (in ms)
 let globalMovementAdjust; //movement speed adjust based on measured FPS
 let globalCollectibleSpeed; //collectible speed (in pc per refresh)
 let globalCollectibleDelay; //delay between collectible generation (in ms)
-let globalScoreLevel = 10; //amount of points to be gained from enemies
 
 //arrays
 let bulletArray = [];
 let enemyArray = [];
 let collectibleArray = [];
+let levelArray = [];
 
 function loop() {
   //canvas
@@ -72,11 +78,11 @@ function loop() {
   //spaceship movement
   archy.move();
 
+  //level/enemy handler
+  levelHandler()
+
   //keep bullets moving
   bulletMovement();
-
-  //keep enemies moving
-  enemyMovement();
 
   //keep collectibles moving
   collectibleMovement();
@@ -84,6 +90,8 @@ function loop() {
   //get FPS and adjust multiplier
   getFPS().then(fps => currentFramerate = fps);
   adjustForFramerate();
+
+  scoreOutput.innerHTML = "Scr: " + playerScore;
 
   //check if game is still focused, otherwise pause game
   if (focused == false) {
@@ -108,12 +116,12 @@ window.onfocus = function() {
 function adjustForFramerate() {
   globalMovementAdjust = ( 100 - ( ( currentFramerate * 88 ) / 100 ) + 100 ) * 0.01; // we calculate the multiplier here
   globalSpeed = 10 * globalMovementAdjust;
-  globalEnemySpeed = 4 * globalMovementAdjust;
+  globalEnemySpeed = levelArray[globalLevelNumber].levelEnemySpeed * globalMovementAdjust;
   globalBulletSpeed = 18 * globalMovementAdjust;
-  globalCollectibleSpeed = 8 * globalMovementAdjust;
+  globalCollectibleSpeed = levelArray[globalLevelNumber].levelCollectibleSpeed * globalMovementAdjust;
   globalBulletDelay = 300;
-  globalEnemyDelay = 2000;
-  globalCollectibleDelay = 3000
+  globalEnemyDelay = levelArray[globalLevelNumber].levelEnemyDelay;
+  globalCollectibleDelay = levelArray[globalLevelNumber].levelCollectibleDelay;
 }
 
 //function to be called when the game needs to be stopped (things to be stopped must be added in here)
@@ -142,16 +150,15 @@ getFPS().then(fps => currentFramerate = fps);
 
 //exec audio event, just add if's for extra audio files
 function playAudio(audioID) {
-  var audio;
   if (audioID == 'shoot') {
-    audio = new Audio('audio/bullet.mp3');
-    audio.play();
+    var audio0 = new Audio('audio/bullet.mp3');
+    audio0.play();
   } else if (audioID == 'lvlup') {
-    audio = new Audio('audio/lvlup.mp3');
-    audio.play();
+    var audio1 = new Audio('audio/lvlup.mp3');
+    audio1.play();
   } else if (audioID == 'pickup') {
-    audio = new Audio('audio/pickup.mp3');
-    audio.play();
+    var audio2 = new Audio('audio/pickup.mp3');
+    audio2.play();
   }
 }
 
@@ -209,8 +216,8 @@ function collectibleMovement() {
 
 //enemy generation
 function generateEnemy() {
-    let en1 = new Enemy(10);
-    enemyArray.push(en1);
+  let en1 = new Enemy();
+  enemyArray.push(en1);
 }
 
 //collectible generation
@@ -232,8 +239,8 @@ function enemyMovement() {
     if (collision(enemyArray[i].posX, enemyArray[i].posY, bulletArray, 60, 20, true, true) == true) {
       enemyArray[i].hp -= currentBulletDamage;
       if (Number(enemyArray[i].hp) == 0) {
-        enemyArray.splice(i, 1);
         playerScore = playerScore + globalScoreLevel;
+        enemyArray.splice(i, 1);
       } else {
         return;
       }
@@ -268,6 +275,48 @@ function collision(X, Y, array, hitboxOffset, hitboxOffset2, multiObject, isAgai
   }
 }
 
+function levelHandler() {
+  if (globalLevelNumber != 9) {
+    isBossStage = false;
+    if (playerScore != levelArray[globalLevelNumber].levelScoreLimit) {
+      //keep enemies moving
+      enemyMovement();
+    } else {
+      levelCleared();
+    }
+  } else {
+    isBossStage = true;
+    if (enemyArray[0].hp != 0) {
+      //keep enemies moving
+      enemyMovement();
+    } else {
+      levelCleared();
+    }
+  }
+}
+
+function levelCleared() {
+  currentlyRunning = false
+  enemyArray = [];
+  bulletArray = [];
+  globalLevelNumber++;
+}
+
+//class for level generation
+class Level {
+  constructor(enemyDmg, enemySpeed, enemyDelay, bossHP, cltDelay, cltSpeed, enemyImg, scrLevel, scrLimit) {
+    this.levelEnemyHP = enemyDmg;
+    this.levelEnemySpeed = enemySpeed;
+    this.levelEnemyDelay = enemyDelay;
+    this.levelEnemyImg = enemyImg;
+    this.bossHP = bossHP;
+    this.levelCollectibleDelay = cltDelay;
+    this.levelCollectibleSpeed = cltSpeed;
+    this.levelScoreLevel = scrLevel;
+    this.levelScoreLimit = scrLimit;
+  }
+}
+
 //class for bullets
 class Bullet {
   constructor(damage) {
@@ -289,15 +338,16 @@ class Bullet {
 
 //class for enemies
 class Enemy {
-  constructor(hp) {
+  constructor() {
     this.posX = 80;
-    this.posY = 80;
-    this.hp = hp;
+    this.posY = Math.floor(Math.random()*800);
+    this.hp = levelArray[globalLevelNumber].levelEnemyHP;
     this.movementX = globalEnemySpeed;
+    this.movementY = globalEnemySpeed;
   }
   move() {
     ctx.drawImage(
-      imageEnemy,
+      levelArray[globalLevelNumber].levelEnemyImg,
       this.posX,
       this.posY,
       60,
@@ -311,7 +361,7 @@ class Enemy {
 class Collectible {
   constructor(type) {
     this.posX = Math.floor(Math.random()*1500);
-    this.posY = 20;
+    this.posY = 10;
     this.type = type;
   }
   move() {
@@ -439,6 +489,9 @@ buttonResume.onclick = function() {
 
 //generate new Archy (spaceship)
 let archy = new Spaceship();
+
+let level1 = new Level(10, 6, 3000, 500, 3000, 8, imageEnemy, 10, 50);
+levelArray.push(level1);
 
 //start loop
 loop();
