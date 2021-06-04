@@ -1,6 +1,6 @@
 /*
 Last Author: K1llf0rce
-Date: 01.06.2021
+Date: 04.06.2021
 */
 
 //exec code in strict mode
@@ -91,8 +91,6 @@ function loop() {
   getFPS().then(fps => currentFramerate = fps);
   adjustForFramerate();
 
-  scoreOutput.innerHTML = "Scr: " + playerScore;
-
   //check if game is still focused, otherwise pause game
   if (focused == false) {
     gameStop();
@@ -135,6 +133,7 @@ function gameStop() {
 function gameStart() {
   currentlyRunning = true
   loop();
+  scoreOutput.innerHTML = "Score: " + playerScore + "<br>To Reach: " + levelArray[globalLevelNumber].levelScoreLimit;
   mainEnemyLoop = setInterval(generateEnemy, globalEnemyDelay);
   mainCollectibleLoop = setInterval(generateCollectible, globalEnemyDelay);
 }
@@ -240,6 +239,7 @@ function enemyMovement() {
       enemyArray[i].hp -= currentBulletDamage;
       if (Number(enemyArray[i].hp) == 0) {
         playerScore = playerScore + globalScoreLevel;
+        scoreOutput.innerHTML = "Score: " + playerScore + "<br>To Reach: " + levelArray[globalLevelNumber].levelScoreLimit;
         enemyArray.splice(i, 1);
       } else {
         return;
@@ -297,9 +297,14 @@ function levelHandler() {
 
 function levelCleared() {
   currentlyRunning = false
+  clearInterval(mainEnemyLoop);
+  clearInterval(mainCollectibleLoop);
   enemyArray = [];
   bulletArray = [];
   globalLevelNumber++;
+  playerScore = 0;
+  scoreOutput.innerHTML = "Level " + globalLevelNumber + " cleared!";
+  setTimeout(gameStart, 1000);
 }
 
 //class for level generation
@@ -492,14 +497,20 @@ let archy = new Spaceship();
 
 let level1 = new Level(10, 6, 3000, 500, 3000, 8, imageEnemy, 10, 50);
 levelArray.push(level1);
+let level2 = new Level(10, 8, 3000, 500, 3000, 8, imageEnemy, 10, 100);
+levelArray.push(level2);
 
-//start loop
+
+//main loop
 loop();
 
-//enemy function for testing
+//show stat screen once
+scoreOutput.innerHTML = "Score: " + playerScore + "<br>To Reach: " + levelArray[globalLevelNumber].levelScoreLimit;
+
+//enemy gen
 mainEnemyLoop = setInterval(generateEnemy, globalEnemyDelay);
 
-//collectible generation
+//collectible gen
 mainCollectibleLoop = setInterval(generateCollectible, globalCollectibleDelay);
 
 
