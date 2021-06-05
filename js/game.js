@@ -1,6 +1,6 @@
 /*
 Last Author: K1llf0rce
-Date: 04.06.2021
+Date: 05.06.2021
 */
 
 //exec code in strict mode
@@ -58,10 +58,8 @@ let globalSpeed; //spaceship speed (in px per refresh)
 let globalEnemySpeed; //enemy speed (in px per refresh)
 let globalBulletSpeed; //bullet speed (in px per refresh)
 let globalBulletDelay; //delay between each bullet (in ms)
-let globalEnemyDelay; //delay between enemy generation (in ms)
 let globalMovementAdjust; //movement speed adjust based on measured FPS
 let globalCollectibleSpeed; //collectible speed (in pc per refresh)
-let globalCollectibleDelay; //delay between collectible generation (in ms)
 
 //arrays
 let bulletArray = [];
@@ -120,8 +118,6 @@ function adjustForFramerate() {
   globalBulletSpeed = 18 * globalMovementAdjust;
   globalCollectibleSpeed = levelArray[globalLevelNumber].levelCollectibleSpeed * globalMovementAdjust;
   globalBulletDelay = 300;
-  globalEnemyDelay = levelArray[globalLevelNumber].levelEnemyDelay;
-  globalCollectibleDelay = levelArray[globalLevelNumber].levelCollectibleDelay;
 }
 
 //function to be called when the game needs to be stopped (things to be stopped must be added in here)
@@ -129,16 +125,17 @@ function gameStop() {
   currentlyRunning = false;
   clearInterval(mainEnemyLoop);
   clearInterval(mainCollectibleLoop);
+  clearInterval(mainEnemyShootingLoop);
 }
 
 //function to resume game
 function gameStart() {
   currentlyRunning = true
   loop();
-  scoreOutput.innerHTML = "Score: " + playerScore + "<br>To Reach: " + levelArray[globalLevelNumber].levelScoreLimit;
-  mainEnemyLoop = setInterval(generateEnemy, globalEnemyDelay);
+  mainOut(0);
+  mainEnemyLoop = setInterval(generateEnemy, levelArray[globalLevelNumber].levelEnemyDelay);
   mainEnemyShootingLoop = setInterval(enemyShooting, 1000);
-  mainCollectibleLoop = setInterval(generateCollectible, globalEnemyDelay);
+  mainCollectibleLoop = setInterval(generateCollectible, levelArray[globalLevelNumber].levelCollectibleDelay);
 
 }
 
@@ -179,7 +176,10 @@ function shootInit() {
 
 function enemyShooting() {
   for (let i = 0; i < enemyArray.length; i++) {
-    enemyArray[i].shoot();
+    let rndm = Number(Math.floor(Math.random()*100));
+    if (rndm < 50) {
+      enemyArray[i].shoot();
+    }
   }
 }
 
@@ -197,8 +197,9 @@ function generateBullet(X, Y, dmg, isUp) {
 function spaceshipMovement() {
   if (collision(archy.posX, archy.posY, bulletArray, 60, 20, true, true) == true) {
     archy.hp -= levelArray[globalLevelNumber].levelEnemyDamage;
+    mainOut(0);
     if (Number(archy.hp) <= 0) {
-      alert("Game Over");
+      scoreOutput.innerHTML = "Game<br>Over!";
       gameStop();
     }
   } else {
@@ -225,6 +226,7 @@ function collectibleMovement() {
     if (collision(collectibleArray[i].posX, collectibleArray[i].posY, archy, 50, 40, false, false) == true) {
       if (collectibleArray[i].type == 'shield') {
         archy.hp += 10;
+        mainOut(0);
         playAudio('lvlup');
       } else if (collectibleArray[i].type == 'coin') {
         DogeCoins = DogeCoins + 10;
@@ -274,7 +276,7 @@ function enemyMovement() {
       enemyArray[i].hp -= currentBulletDamage;
       if (Number(enemyArray[i].hp) == 0) {
         playerScore = playerScore + levelArray[globalLevelNumber].levelScoreLevel;
-        scoreOutput.innerHTML = "Score: " + playerScore + "<br>To Reach: " + levelArray[globalLevelNumber].levelScoreLimit;
+        mainOut(0);
         enemyArray.splice(i, 1);
       } else {
         return;
@@ -290,6 +292,20 @@ function enemyMovement() {
       }
       enemyArray[i].move();
     }
+  }
+}
+
+function mainOut(event) {
+  if (event == 0) {
+    scoreOutput.innerHTML = "Score: " + playerScore + "<br>To Reach: " + levelArray[globalLevelNumber].levelScoreLimit  + "<br>HP: " + archy.hp;
+  } else if (event == 1) {
+    scoreOutput.innerHTML = "Level " + globalLevelNumber + " cleared!";
+  } else if (event == 3) {
+    scoreOutput.innerHTML = "Game<br>Paused!";
+  } else if (event == 4) {
+    scoreOutput.innerHTML = "Game<br>Started!";
+  } else if (event == 2) {
+    scoreOutput.innerHTML = "Game<br>Over!";
   }
 }
 
@@ -346,18 +362,19 @@ function levelCleared() {
   bulletArray = [];
   globalLevelNumber++;
   playerScore = 0;
-  scoreOutput.innerHTML = "Level " + globalLevelNumber + " cleared!";
+  mainOut(1);
   setTimeout(gameStart, 1000);
 }
 
 //class for level generation
 class Level {
-  constructor(enemyHp, enemySpeed, enemyDelay, bossHP, cltDelay, cltSpeed, enemyImg, enemyDmg, archyDmg, scrLevel, scrLimit) {
+  constructor(enemyHp, enemySpeed, enemyDelay, bossHP, cltDelay, cltSpeed, enemyImg, enemyDmg, enemyShtFreq, archyDmg, scrLevel, scrLimit) {
     this.levelEnemyHP = enemyHp;
     this.levelEnemySpeed = enemySpeed;
     this.levelEnemyDelay = enemyDelay;
     this.levelEnemyImg = enemyImg;
     this.levelEnemyDamage = enemyDmg;
+    this.levelEnemyShootFrequency = enemyShtFreq;
     this.levelArchyDamage = archyDmg;
     this.bossHP = bossHP;
     this.levelCollectibleDelay = cltDelay;
@@ -401,7 +418,7 @@ class Bullet {
 class Enemy {
   constructor(hp) {
     this.posX = 80;
-    this.posY = Math.floor(Math.random()*800);
+    this.posY = Number(Math.floor(Math.random()*600));
     this.hp = hp;
     this.movementX = globalEnemySpeed;
     this.movementY = globalEnemySpeed;
@@ -456,7 +473,7 @@ class Spaceship {
   constructor() {
     this.posX = (canvasWidth/2) - 30;
     this.posY = canvasHeight - 60;
-    this.hp = 10;
+    this.hp = 100;
   }
   move() {
     ctx.drawImage(
@@ -554,25 +571,25 @@ buttonResume.onclick = function() {
 //generate new Archy (spaceship)
 let archy = new Spaceship();
 
-let level1 = new Level(10, 6, 3000, 500, 3000, 8, imageEnemy, 10, 10, 10, 50);
+let level1 = new Level(10, 6, 3000, 500, 3000, 8, imageEnemy, 10, 500, 10, 10, 50);
 levelArray.push(level1);
-let level2 = new Level(10, 8, 3000, 500, 3000, 8, imageEnemy, 10, 10, 10, 100);
+let level2 = new Level(10, 8, 3000, 500, 3000, 8, imageEnemy, 10, 400, 10, 10, 100);
 levelArray.push(level2);
 
 //main loop
 loop();
 
 //show stat screen once
-scoreOutput.innerHTML = "Score: " + playerScore + "<br>To Reach: " + levelArray[globalLevelNumber].levelScoreLimit;
+scoreOutput.innerHTML = "Score: " + playerScore + "<br>To Reach: " + levelArray[globalLevelNumber].levelScoreLimit  + "<br>HP: " + archy.hp;
 
 //enemy gen
-mainEnemyLoop = setInterval(generateEnemy, globalEnemyDelay);
+mainEnemyLoop = setInterval(generateEnemy, levelArray[globalLevelNumber].levelEnemyDelay);
 
 //enemy shooting gen
-mainEnemyShootingLoop = setInterval(enemyShooting, 1000);
+mainEnemyShootingLoop = setInterval(enemyShooting, levelArray[globalLevelNumber].levelEnemyShootFrequency);
 
 //collectible gen
-mainCollectibleLoop = setInterval(generateCollectible, globalCollectibleDelay);
+mainCollectibleLoop = setInterval(generateCollectible, levelArray[globalLevelNumber].levelCollectibleDelay);
 
 
 
