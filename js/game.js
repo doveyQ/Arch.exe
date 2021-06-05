@@ -37,19 +37,20 @@ let currentlyShooting = false;
 let currentlyRunning = true;
 let focused = true;
 let isBossStage = false;
+let bossLock = false;
 
 //other variables
 let currentFramerate;
 let mainBulletLoop;
 let mainEnemyLoop;
 let mainCollectibleLoop;
+let mainEnemyShootingLoop;
 let typeToSpawn = 'shield';
 
 //counter variables
 let DogeCoins = 0;
 let currentBulletDamage = 0;
 let playerScore = 0;
-let globalScoreLevel = 10; //amount of points to be gained from enemies
 let globalLevelNumber = 0;
 
 //global speed adjustment
@@ -76,7 +77,8 @@ function loop() {
   cv.width = 1600;
 
   //spaceship movement
-  archy.move();
+  spaceshipMovement()
+  //archy.move();
 
   //level/enemy handler
   levelHandler()
@@ -135,7 +137,9 @@ function gameStart() {
   loop();
   scoreOutput.innerHTML = "Score: " + playerScore + "<br>To Reach: " + levelArray[globalLevelNumber].levelScoreLimit;
   mainEnemyLoop = setInterval(generateEnemy, globalEnemyDelay);
+  mainEnemyShootingLoop = setInterval(enemyShooting, 1000);
   mainCollectibleLoop = setInterval(generateCollectible, globalEnemyDelay);
+
 }
 
 //function that returns the FPS
@@ -164,21 +168,41 @@ function playAudio(audioID) {
 //initial shoot function
 function shootInit() {
   if (currentlyShooting == false && currentlyRunning == true) {
-    generateBullet(); //initially call function once to allow for one tapping
+    generateBullet(archy.posX + 20, archy.posY, levelArray[globalLevelNumber].levelArchyDamage, true); //initially call function once to allow for one tapping
     //this also allows the user to continously tap to shoot faster, although not escalate in the function breaking (might be adjusted later)
   }
   if (currentlyShooting == false && currentlyRunning == true) {
     currentlyShooting = true;
-    mainBulletLoop = setInterval(generateBullet, globalBulletDelay); //to avoid bullet spam call a fixed interval once
+    mainBulletLoop = setInterval( function() { generateBullet(archy.posX + 20, archy.posY, levelArray[globalLevelNumber].levelArchyDamage, true); }, globalBulletDelay); //to avoid bullet spam call a fixed interval once
+  }
+}
+
+function enemyShooting() {
+  for (let i = 0; i < enemyArray.length; i++) {
+    enemyArray[i].shoot();
   }
 }
 
 //generate bullet
-function generateBullet() {
+function generateBullet(X, Y, dmg, isUp) {
   if (currentlyRunning == true) {
-    playAudio('shoot');
-    let bl1 = new Bullet(10);
+    let bl1 = new Bullet(X, Y, dmg, isUp);
     bulletArray.push(bl1);
+    if (isUp == true) {
+      playAudio('shoot');
+    }
+  }
+}
+
+function spaceshipMovement() {
+  if (collision(archy.posX, archy.posY, bulletArray, 60, 20, true, true) == true) {
+    archy.hp -= levelArray[globalLevelNumber].levelEnemyDamage;
+    if (Number(archy.hp) <= 0) {
+      alert("Game Over");
+      gameStop();
+    }
+  } else {
+    archy.move();
   }
 }
 
@@ -186,6 +210,8 @@ function generateBullet() {
 function bulletMovement() {
   for (let i = 0; i < bulletArray.length; i++) {
     if ((bulletArray[i].posY) < 0) {
+      bulletArray.splice(i, 1);
+    } else if ((bulletArray[i].posY) > canvasHeight && bulletArray[i].isUp == false) {
       bulletArray.splice(i, 1);
     } else {
       bulletArray[i].move();
@@ -196,9 +222,7 @@ function bulletMovement() {
 //bullet movement for collectible array
 function collectibleMovement() {
   for (let i = 0; i < collectibleArray.length; i++) {
-    if ((collectibleArray[i].posY) > canvasHeight) {
-      collectibleArray.splice(i, 1);
-    } else if (collision(collectibleArray[i].posX, collectibleArray[i].posY, archy, 50, 40, false, false) == true) {
+    if (collision(collectibleArray[i].posX, collectibleArray[i].posY, archy, 50, 40, false, false) == true) {
       if (collectibleArray[i].type == 'shield') {
         archy.hp += 10;
         playAudio('lvlup');
@@ -206,6 +230,9 @@ function collectibleMovement() {
         DogeCoins = DogeCoins + 10;
         playAudio('pickup');
       }
+      collectibleArray.splice(i, 1);
+    } 
+    else if ((collectibleArray[i].posY) > canvasHeight) {
       collectibleArray.splice(i, 1);
     } else {
       collectibleArray[i].move();
@@ -215,8 +242,16 @@ function collectibleMovement() {
 
 //enemy generation
 function generateEnemy() {
-  let en1 = new Enemy();
-  enemyArray.push(en1);
+  if (bossLock != true) {
+    let en1
+    if (isBossStage == true) {
+      bossLock = true;
+      en1 = new Enemy(levelArray[globalLevelNumber].bossHP);
+    } else {
+      en1 = new Enemy(levelArray[globalLevelNumber].levelEnemyHP);
+    }
+    enemyArray.push(en1);
+  }
 }
 
 //collectible generation
@@ -238,7 +273,7 @@ function enemyMovement() {
     if (collision(enemyArray[i].posX, enemyArray[i].posY, bulletArray, 60, 20, true, true) == true) {
       enemyArray[i].hp -= currentBulletDamage;
       if (Number(enemyArray[i].hp) == 0) {
-        playerScore = playerScore + globalScoreLevel;
+        playerScore = playerScore + levelArray[globalLevelNumber].levelScoreLevel;
         scoreOutput.innerHTML = "Score: " + playerScore + "<br>To Reach: " + levelArray[globalLevelNumber].levelScoreLimit;
         enemyArray.splice(i, 1);
       } else {
@@ -263,9 +298,15 @@ function collision(X, Y, array, hitboxOffset, hitboxOffset2, multiObject, isAgai
   if (multiObject == true && isAgainstBullet == true) {
     for (let i = 0; i < array.length; i++) {
       if ( ( array[i].posX - hitboxOffset2 ) < ( X + hitboxOffset ) && ( array[i].posX + hitboxOffset2 ) > X && array[i].posY < ( Y + hitboxOffset ) && ( array[i].posY + hitboxOffset2 ) > Y) {
-        currentBulletDamage = array[i].damage;
-        array.splice(i, 1);
-        return true;
+        if (array[i].isUp == true && X != archy.posX) {
+          currentBulletDamage = array[i].damage;
+          array.splice(i, 1);
+          return true;
+        } else if (array[i].isUp != true && X == archy.posX){
+          archy.hp - levelArray[globalLevelNumber].levelEnemyDamage;
+          array.splice(i, 1);
+          return true;
+        }
       }
     }
   } else {
@@ -277,6 +318,7 @@ function collision(X, Y, array, hitboxOffset, hitboxOffset2, multiObject, isAgai
 
 function levelHandler() {
   if (globalLevelNumber != 9) {
+    bossLock = false;
     isBossStage = false;
     if (playerScore != levelArray[globalLevelNumber].levelScoreLimit) {
       //keep enemies moving
@@ -299,6 +341,7 @@ function levelCleared() {
   currentlyRunning = false
   clearInterval(mainEnemyLoop);
   clearInterval(mainCollectibleLoop);
+  clearInterval(mainEnemyShootingLoop);
   enemyArray = [];
   bulletArray = [];
   globalLevelNumber++;
@@ -309,11 +352,13 @@ function levelCleared() {
 
 //class for level generation
 class Level {
-  constructor(enemyDmg, enemySpeed, enemyDelay, bossHP, cltDelay, cltSpeed, enemyImg, scrLevel, scrLimit) {
-    this.levelEnemyHP = enemyDmg;
+  constructor(enemyHp, enemySpeed, enemyDelay, bossHP, cltDelay, cltSpeed, enemyImg, enemyDmg, archyDmg, scrLevel, scrLimit) {
+    this.levelEnemyHP = enemyHp;
     this.levelEnemySpeed = enemySpeed;
     this.levelEnemyDelay = enemyDelay;
     this.levelEnemyImg = enemyImg;
+    this.levelEnemyDamage = enemyDmg;
+    this.levelArchyDamage = archyDmg;
     this.bossHP = bossHP;
     this.levelCollectibleDelay = cltDelay;
     this.levelCollectibleSpeed = cltSpeed;
@@ -324,29 +369,40 @@ class Level {
 
 //class for bullets
 class Bullet {
-  constructor(damage) {
-    this.posX = archy.posX + 20;
-    this.posY = archy.posY;
+  constructor(X, Y, damage, isUp) {
+    this.posX = X;
+    this.posY = Y;
     this.damage = damage;
+    this.isUp = isUp;
   }
   move() {
+    let img;
+    if (this.isUp == true) {
+      img = imageBullet;
+    } else {
+      img = imageBullet;
+    }
     ctx.drawImage(
-      imageBullet,
+      img,
       this.posX,
       this.posY,
       20,
       20
     );
-    this.posY -= globalBulletSpeed;
+    if (this.isUp == true) {
+      this.posY -= globalBulletSpeed;
+    } else {
+      this.posY += globalBulletSpeed;
+    }
   }
 }
 
 //class for enemies
 class Enemy {
-  constructor() {
+  constructor(hp) {
     this.posX = 80;
     this.posY = Math.floor(Math.random()*800);
-    this.hp = levelArray[globalLevelNumber].levelEnemyHP;
+    this.hp = hp;
     this.movementX = globalEnemySpeed;
     this.movementY = globalEnemySpeed;
   }
@@ -359,6 +415,9 @@ class Enemy {
       60
     );
     this.posX += this.movementX;
+  }
+  shoot() {
+    generateBullet(this.posX, this.posY, levelArray[globalLevelNumber].levelEnemyDamage, false);
   }
 }
 
@@ -397,7 +456,7 @@ class Spaceship {
   constructor() {
     this.posX = (canvasWidth/2) - 30;
     this.posY = canvasHeight - 60;
-    this.hp = 100;
+    this.hp = 10;
   }
   move() {
     ctx.drawImage(
@@ -495,11 +554,10 @@ buttonResume.onclick = function() {
 //generate new Archy (spaceship)
 let archy = new Spaceship();
 
-let level1 = new Level(10, 6, 3000, 500, 3000, 8, imageEnemy, 10, 50);
+let level1 = new Level(10, 6, 3000, 500, 3000, 8, imageEnemy, 10, 10, 10, 50);
 levelArray.push(level1);
-let level2 = new Level(10, 8, 3000, 500, 3000, 8, imageEnemy, 10, 100);
+let level2 = new Level(10, 8, 3000, 500, 3000, 8, imageEnemy, 10, 10, 10, 100);
 levelArray.push(level2);
-
 
 //main loop
 loop();
@@ -509,6 +567,9 @@ scoreOutput.innerHTML = "Score: " + playerScore + "<br>To Reach: " + levelArray[
 
 //enemy gen
 mainEnemyLoop = setInterval(generateEnemy, globalEnemyDelay);
+
+//enemy shooting gen
+mainEnemyShootingLoop = setInterval(enemyShooting, 1000);
 
 //collectible gen
 mainCollectibleLoop = setInterval(generateCollectible, globalCollectibleDelay);
