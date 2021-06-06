@@ -1,6 +1,6 @@
 /* 
 Last Author: K1llf0rce
-Date: 04.06.2021
+Date: 06.06.2021
 */
 
 #mainCanvas  {
@@ -37,6 +37,7 @@ Date: 04.06.2021
     margin: 0 auto;
     width: 120em;
     position: relative;
+    transform: scale(1); 
 }
 
 #gameScreen {

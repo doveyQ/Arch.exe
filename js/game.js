@@ -14,6 +14,10 @@ cv.width = 1600;
 let canvasHeight = cv.height;
 let canvasWidth = cv.width;
 
+//window
+let contentWindowH;
+let contentWindowW;
+
 //images
 let image = document.getElementById('spaceship');
 let imageBullet = document.getElementById('bullet1');
@@ -75,11 +79,11 @@ function loop() {
   cv.width = 1600;
 
   //spaceship movement
-  spaceshipMovement()
+  spaceshipMovement();
   //archy.move();
 
   //level/enemy handler
-  levelHandler()
+  levelHandler();
 
   //keep bullets moving
   bulletMovement();
@@ -90,6 +94,11 @@ function loop() {
   //get FPS and adjust multiplier
   getFPS().then(fps => currentFramerate = fps);
   adjustForFramerate();
+
+  contentWindowH = Number(window.innerHeight);
+  contentWindowW = Number(window.innerWidth);
+  //resize
+  checkWindowSize();
 
   //check if game is still focused, otherwise pause game
   if (focused == false) {
@@ -147,6 +156,22 @@ let getFPS = () =>
     )
   )
 getFPS().then(fps => currentFramerate = fps);
+
+function checkWindowSize() {
+  let workingWindow = document.getElementById('gameContainer');
+  if (contentWindowH < 1200) {
+    if (contentWindowH < 1100) {
+      workingWindow.style.transform = "scale(0.8)";
+      return;
+    } else {
+      workingWindow.style.transform = "scale(0.9)";
+      return;
+    }
+  } else {
+    workingWindow.style.transform = "scale(1)";
+    return;
+  }
+}
 
 //exec audio event, just add if's for extra audio files
 function playAudio(audioID) {
@@ -590,17 +615,6 @@ mainEnemyShootingLoop = setInterval(enemyShooting, levelArray[globalLevelNumber]
 
 //collectible gen
 mainCollectibleLoop = setInterval(generateCollectible, levelArray[globalLevelNumber].levelCollectibleDelay);
-
-
-
-
-
-
-
-
-
-
-
 
 
 
