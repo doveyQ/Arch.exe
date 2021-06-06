@@ -161,8 +161,13 @@ function checkWindowSize() {
   let workingWindow = document.getElementById('gameContainer');
   if (contentWindowH < 1200) {
     if (contentWindowH < 1100) {
-      workingWindow.style.transform = "scale(0.8)";
-      return;
+      if (contentWindowH < 1000) {
+        workingWindow.style.transform = "scale(0.7)";
+        return;
+      } else {
+        workingWindow.style.transform = "scale(0.8)";
+        return;
+      }
     } else {
       workingWindow.style.transform = "scale(0.9)";
       return;

@@ -36,8 +36,9 @@ Date: 06.06.2021
 #gameContainer{
     margin: 0 auto;
     width: 120em;
-    position: relative;
+    position: relative, fixed;
     transform: scale(1); 
+    transform-origin : top center;
 }
 
 #gameScreen {
