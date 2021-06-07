@@ -1,6 +1,6 @@
 <!--
 Last Author: K1llf0rce
-Date: 09.05.2021
+Date: 05.06.2021
 -->
 
 <!DOCTYPE html>
@@ -8,37 +8,18 @@ Date: 09.05.2021
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/game.css">
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
     <title>ARCH.EXE</title>
-    <img id="spaceship" src="img/Arch.png" height="60" width="60" alt="spaceship1">
-    <img id="bullet1" src="img/Bullets/Bullet1.png" height="20" width="20" alt="spaceship1">
+    <img id="spaceship" src="img/Arch.png" height="60" width="60" alt="spaceship">
+    <img id="bullet1" src="img/Bullets/Bullet1.png" height="20" width="20" alt="bullet">
     <img id="enemy" src="img/Enemy/Enemy.png" height="60" width="60" alt="enemy">
     <img id="coin" src="img/Collectable/Coin.png" height="40" width="40" alt="coin">
     <img id="shield" src="img/Collectable/Shield.png" height="40" width="40" alt="shield">
 </head>
 
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm bg-dark">
-            <div class="collapse navbar-collapse" id="main-navigation">
-              <ul class="navbar-nav">
-                <li class="nav-item">
-                  <a class="nav-link" href="index.html">Home</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="game.html">Game</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="about.html">About</a>
-                </li>
-              </ul>
-            </div>
-          </nav>
-    </header>
     <section id="gameContainer">
         <div id="gameScreen">
             <div id="buttonContainer">
@@ -47,6 +28,9 @@ Date: 09.05.2021
             </div>
           </div>
         <canvas id="mainCanvas"></canvas>
+        <div id="gameInfoBar">
+          <output id="playerScoreOut">20</output>
+        </div>
     </section>
     <script src="js/jquery/jquery-3.3.1.slim.min.js"></script>
     <script src="js/bootstrap/bootstrap.bundle.js"></script>

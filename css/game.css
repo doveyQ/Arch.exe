@@ -1,6 +1,6 @@
 /* 
 Last Author: K1llf0rce
-Date: 04.04.2021
+Date: 06.06.2021
 */
 
 #mainCanvas  {
@@ -8,6 +8,25 @@ Date: 04.04.2021
     border: solid white;
     background-color: grey;
     margin: 0 auto;
+    width: 1600px;
+    height: 960px;
+}
+
+#gameInfoBar  {
+    border: solid white;
+    background-color: grey;
+    left: 50%;
+    -ms-transform: translate(-50%);
+    transform: translate(-50%);
+    width: 20em;
+    margin: 0 auto;
+    margin-top: 10px;
+    position: absolute;
+    text-align: center;
+}
+
+#playerScoreOut {
+    font-size: 50px;
 }
 
 #spaceship, #bullet1, #enemy, #shield, #coin {
@@ -17,7 +36,9 @@ Date: 04.04.2021
 #gameContainer{
     margin: 0 auto;
     width: 120em;
-    position: relative;
+    position: relative, fixed;
+    transform: scale(1); 
+    transform-origin : top center;
 }
 
 #gameScreen {
@@ -33,7 +54,6 @@ Date: 04.04.2021
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     text-align: center;
-    transition: ease-in 250ms;
 }
 
 #buttonContainer {

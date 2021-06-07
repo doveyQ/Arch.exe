@@ -1,6 +1,6 @@
 <!--
 Last Author: K1llf0rce
-Date: 09.05.2021
+Date: 01.06.2021
 
 !TEMPORARY FOR DEV WORK AND EASE OF USE!
 
@@ -11,36 +11,79 @@ Date: 09.05.2021
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/game.css">
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <title>ARCH.EXE</title>
 </head>
 
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm bg-dark">
-            <div class="collapse navbar-collapse" id="main-navigation">
-              <ul class="navbar-nav">
-                <li class="nav-item">
-                  <a class="nav-link" href="index.html">Home</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="game.html">Game</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="about.html">About</a>
-                </li>
+      <div class="pos-f-t">
+        <div class="collapse" id="navbarToggleExternalContent">
+          <div class="bg-dark p-4">
+            <ul class="nav justify-content-center">
+              <li class="nav-item">
+                <a class="nav-link" href="index.html">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="game.html">Game</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="about.html">About</a>
+              </li>
               </ul>
-            </div>
-          </nav>
+          </div>
+        </div>
+        <nav class="navbar navbar-dark bg-dark">
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </nav>
+      </div>
     </header>
+
+
+
+
     <div id="mainContainer">
-        <h1>Temp</h1>
-        <p>This is a temporary index for ease of work.</p>
-    </div>
+      <div class="d-flex justify-content-around">
+        <div class="p-2">
+        <h1 class="text-center">Spaceships</h1>
+        <p>Chose between your spaceship</p>
+        <ul class="nav nav-pills nav-fill">
+          <li class="col text-center">
+            <a class="nav-link active" href="#">Active</a>
+          </li>
+          </ul>
+        </div>
+        <div class="p-2">
+        <h1 class="text-center">Shop</h1>
+          <p>Upgrade your items or weapons</p>
+        <ul class="nav nav-pills nav-fill">
+          <li class="col text-center">
+            <a class="nav-link active" href="#">Active</a>
+          </li>
+          </ul>
+        </div>
+        <div class="p-2">
+        <h1 class="text-center">Enemies</h1>
+        <p>Inspect enemies and their abilities</p>
+        <ul class="nav nav-pills nav-fill">
+          <li class="col text-center">
+            <a class="nav-link active" href="#">Active</a>
+          </li>
+          </ul>
+        </div>
+      </div>  
+</div>
+
+
+
+
     <script src="js/jquery/jquery-3.3.1.slim.min.js"></script>
     <script src="js/bootstrap/bootstrap.bundle.js"></script>
     <script src="js/main.js"></script>
