@@ -403,7 +403,6 @@ function levelCleared() {
 
 //mr sowa would scream at this bc too many variables but fuck it
 function levelGenHandler(stageDef, amountOfLevels) {
-  let count = 0;
   let level;
   //adjustifiers (sensible Defaults: 10, 6, 3000, 500, 3000, 8, imageEnemy, 10, 500, 10, 10, 50)
   let adjenemyHp = 10;
@@ -417,30 +416,26 @@ function levelGenHandler(stageDef, amountOfLevels) {
   let adjenemyShtFreq = 500;
   let adjarchyDmg = 10;
   let adjscrLevel = 10;
-  let adjscrLimit = 10;
+  let adjscrLimit = 50;
   //#
   for (let i=0; i < amountOfLevels; i++) {
-    if ( (i % 10) == 0 ) {
+    if ( i != 0 && (i % 10) == 0 ) {
       adjbossHP += 500;
     }
-    if ( (count % stageDef) == 0 ) {
-      level = new Level(adjenemyHp, adjenemySpeed, adjenemyDelay, adjbossHP, adjcltDelay, adjcltSpeed, adjenemyImg, adjenemyDmg, adjenemyShtFreq, adjarchyDmg, adjscrLevel, adjscrLimit);
-      levelArray.push(level);
-      count++;
-    } else {
-      //#
+    if ( i != 0 && (i % stageDef) == 0 ) {
       adjenemyHp += 10;
       adjenemySpeed += 0.5;
-      adjenemyDelay -= 100;
+      adjenemyDelay *= 0.9;
       adjenemyImg = imageEnemy;
-      adjenemyDmg += 5;
-      adjenemyShtFreq -= 100;
+      adjenemyDmg += 2;
+      adjenemyShtFreq *= 0.9;
       adjarchyDmg += 5;
-      adjscrLevel += 10;
-      adjscrLimit += 50;
-      //#
-      count = 0;
+      adjscrLevel += 20;
+      adjscrLimit *= 2;
     }
+    level = new Level(adjenemyHp, adjenemySpeed, adjenemyDelay, adjbossHP, adjcltDelay, adjcltSpeed, adjenemyImg, adjenemyDmg, adjenemyShtFreq, adjarchyDmg, adjscrLevel, adjscrLimit);
+    levelArray.push(level);
+    adjscrLimit += 50;
   }
 }
 
