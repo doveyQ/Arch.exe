@@ -178,14 +178,17 @@ function checkWindowSize() {
 //exec audio event, just add if's for extra audio files
 function playAudio(audioID) {
   var audio0 = new Audio('audio/bullet.mp3');
-  var audio1 = new Audio('audio/lvlup.mp3');
-  var audio2 = new Audio('audio/pickup.mp3');
+  var audio1 = new Audio('audio/shieldCollect.mp3');
+  var audio2 = new Audio('audio/shotincCollect.mp3');
+  var audio3 = new Audio('audio/explosion.mp3');
   if (audioID == 'shoot') {
     audio0.play();
   } else if (audioID == 'lvlup') {
     audio1.play();
   } else if (audioID == 'pickup') {
     audio2.play();
+  } else if (audioID == 'explode') {
+    audio3.play();
   }
 }
 
@@ -307,6 +310,7 @@ function enemyMovement() {
         playerScore = playerScore + levelArray[globalLevelNumber].levelScoreLevel;
         mainOut(0);
         enemyArray.splice(i, 1);
+        playAudio('explode');
       } else {
         return;
       }
@@ -424,8 +428,7 @@ function levelGenHandler(stageDef, amountOfLevels) {
       adjenemyHp += 10;
       adjenemySpeed += 0.5;
       adjenemyDelay *= 0.9;
-      adjenemyImg = imageEnemy;
-      adjenemyDmg += 2;
+      adjenemyDmg += 5;
       adjenemyShtFreq *= 0.9;
       adjarchyDmg += 5;
       adjscrLevel += 20;
@@ -489,7 +492,7 @@ class Bullet {
 class Enemy {
   constructor(hp) {
     this.posX = Number(Math.floor(Math.random()*1400));
-    this.posY = Number(Math.floor(Math.random()*600));
+    this.posY = Number(Math.floor(Math.random()*400));
     this.hp = hp;
     if (Number( ((Math.floor(Math.random()*10)))%2) == 0) {
       this.movementX = -globalEnemySpeed;
@@ -518,7 +521,7 @@ class Enemy {
 class Collectible {
   constructor(type) {
     this.posX = Math.floor(Math.random()*1500);
-    this.posY = 10;
+    this.posY = 0;
     this.type = type;
   }
   move() {
