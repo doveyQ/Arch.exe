@@ -75,6 +75,29 @@ p-2, h1 {
                          "footer-right";
 }
 
+#credits {
+    text-align: center;
+    font-size: 30px;
+}
+
+#credits-page {
+    margin-left: 5%;
+}
+
+#devType {
+    padding-right: 5%;
+    padding-bottom: 1%;
+}
+
+#devType p{
+    font-size: 20px;
+}
+
+
+#play {
+    text-align: center;
+    margin-top: -15%;
+}
 
 /*Hier der Abschnitt für zB tablets im Querformat-Modus*/
 @media only screen and (min-width: 40em){
