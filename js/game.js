@@ -20,10 +20,11 @@ let contentWindowW;
 
 //images
 let image = document.getElementById('spaceship');
-let imageBullet = document.getElementById('bullet1');
+let imageBullet = document.getElementById('bulletArchy');
+let imageEnemyBullet = document.getElementById('bulletEnemy');
 let imageEnemy = document.getElementById('enemy');
 let imageShield = document.getElementById('shield');
-let imageCoin = document.getElementById('coin');
+let imageFire = document.getElementById('fire');
 
 //buttons
 let buttonResume = document.getElementById('gameButtonResume');
@@ -126,7 +127,7 @@ function adjustForFramerate() {
   globalEnemySpeed = levelArray[globalLevelNumber].levelEnemySpeed * globalMovementAdjust;
   globalBulletSpeed = 16 * globalMovementAdjust;
   globalCollectibleSpeed = levelArray[globalLevelNumber].levelCollectibleSpeed * globalMovementAdjust;
-  globalBulletDelay = 300;
+  globalBulletDelay = archy.bulletCooldown;
 }
 
 //function to be called when the game needs to be stopped (things to be stopped must be added in here)
@@ -179,14 +180,14 @@ function checkWindowSize() {
 
 //exec audio event, just add if's for extra audio files
 function playAudio(audioID) {
+  var audio0 = new Audio('audio/bullet.mp3');
+  var audio1 = new Audio('audio/lvlup.mp3');
+  var audio2 = new Audio('audio/pickup.mp3');
   if (audioID == 'shoot') {
-    var audio0 = new Audio('audio/bullet.mp3');
     audio0.play();
   } else if (audioID == 'lvlup') {
-    var audio1 = new Audio('audio/lvlup.mp3');
     audio1.play();
   } else if (audioID == 'pickup') {
-    var audio2 = new Audio('audio/pickup.mp3');
     audio2.play();
   }
 }
@@ -259,8 +260,8 @@ function collectibleMovement() {
         archy.hp += 10;
         mainOut(0);
         playAudio('lvlup');
-      } else if (collectibleArray[i].type == 'coin') {
-        DogeCoins = DogeCoins + 10;
+      } else if (collectibleArray[i].type == 'fire') {
+        archy.decreaseCooldown(10);
         playAudio('pickup');
       }
       collectibleArray.splice(i, 1);
@@ -292,9 +293,9 @@ function generateCollectible() {
   let colType;
   if (typeToSpawn == 'shield') {
     colType = new Collectible('shield');
-    typeToSpawn = 'coin';
+    typeToSpawn = 'fire';
   } else {
-    colType = new Collectible('coin');
+    colType = new Collectible('fire');
     typeToSpawn = 'shield';
   }
   collectibleArray.push(colType);
@@ -470,7 +471,7 @@ class Bullet {
     if (this.isUp == true) {
       img = imageBullet;
     } else {
-      img = imageBullet;
+      img = imageEnemyBullet;
     }
     ctx.drawImage(
       img,
@@ -524,9 +525,9 @@ class Collectible {
     this.type = type;
   }
   move() {
-    if (this.type == 'coin') {
+    if (this.type == 'fire') {
       ctx.drawImage(
-        imageCoin,
+        imageFire,
         this.posX,
         this.posY,
         40,
@@ -552,6 +553,7 @@ class Spaceship {
     this.posX = (canvasWidth/2) - 30;
     this.posY = canvasHeight - 60;
     this.hp = 100;
+    this.bulletCooldown = 300;
   }
   move() {
     ctx.drawImage(
@@ -576,6 +578,15 @@ class Spaceship {
   }
   shoot() {
     generateBullet(this.posX + 20, this.posY - 20, levelArray[globalLevelNumber].levelArchyDamage, true); 
+  }
+  decreaseCooldown(value) {
+    if (this.bulletCooldown >= 100 && (this.bulletCooldown-value) >= 100) {
+      this.bulletCooldown -= Number(value);
+      currentlyShooting = false;
+      clearInterval(mainBulletLoop); // clears the interval that was previously called to generate bullets
+    } else {
+      return true;
+    }
   }
 }
 

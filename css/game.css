@@ -31,7 +31,7 @@ Date: 06.06.2021
     font-size: 50px;
 }
 
-#spaceship, #bullet1, #enemy, #shield, #coin {
+#spaceship, #bulletArchy, #bulletEnemy, #enemy, #shield, #fire {
     display: none;
 }
 
