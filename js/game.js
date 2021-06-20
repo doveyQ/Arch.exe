@@ -53,7 +53,6 @@ let mainEnemyShootingLoop;
 let typeToSpawn = 'shield';
 
 //counter variables
-let DogeCoins = 0;
 let currentBulletDamage = 0;
 let playerScore = 0;
 let globalLevelNumber = 0;
@@ -159,22 +158,20 @@ getFPS().then(fps => currentFramerate = fps);
 
 function checkWindowSize() {
   let workingWindow = document.getElementById('gameContainer');
-  if (contentWindowH < 1200) {
-    if (contentWindowH < 1100) {
-      if (contentWindowH < 1000) {
-        workingWindow.style.transform = "scale(0.7)";
-        return;
-      } else {
-        workingWindow.style.transform = "scale(0.8)";
-        return;
-      }
-    } else {
-      workingWindow.style.transform = "scale(0.9)";
-      return;
-    }
+  if (contentWindowH < 700) {
+    workingWindow.style.transform = "scale(0.4)";
+  } else if (contentWindowH < 800) {
+    workingWindow.style.transform = "scale(0.5)";
+  } else if (contentWindowH < 900) {
+    workingWindow.style.transform = "scale(0.6)";
+  } else if (contentWindowH < 1000) {
+    workingWindow.style.transform = "scale(0.7)";
+  } else if (contentWindowH < 1100) {
+    workingWindow.style.transform = "scale(0.8)";
+  } else if (contentWindowH < 1200 ) {
+    workingWindow.style.transform = "scale(0.9)";
   } else {
     workingWindow.style.transform = "scale(1)";
-    return;
   }
 }
 
