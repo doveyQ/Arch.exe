@@ -407,7 +407,7 @@ function levelGenHandler(stageDef, amountOfLevels) {
   //adjustifiers (sensible Defaults: 10, 6, 3000, 500, 3000, 8, imageEnemy, 10, 500, 10, 10, 50)
   let adjenemyHp = 10;
   let adjenemySpeed = 6;
-  let adjenemyDelay = 3000;
+  let adjenemyDelay = 2500;
   let adjbossHP = 500;
   let adjcltDelay = 3000;
   let adjcltSpeed = 8;
@@ -501,8 +501,9 @@ class Enemy {
     this.movementY = globalEnemySpeed;
   }
   move() {
+    let img = levelArray[globalLevelNumber].levelEnemyImg;
     ctx.drawImage(
-      levelArray[globalLevelNumber].levelEnemyImg,
+      img,
       this.posX,
       this.posY,
       60,

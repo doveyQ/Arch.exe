@@ -6,7 +6,9 @@ Date: 06.06.2021
 #mainCanvas  {
     display: block;
     border: solid white;
-    background-color: grey;
+    background-image: url(../img/Backgrounds/gameBackground0.jpg);
+    background-size: cover;
+    background-blend-mode:lighten;
     margin: 0 auto;
     width: 1600px;
     height: 960px;
