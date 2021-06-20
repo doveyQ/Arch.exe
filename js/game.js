@@ -16,7 +16,9 @@ let canvasWidth = cv.width;
 
 //window
 let contentWindowH;
-let contentWindowW;
+//let contentWindowW;
+
+var audioSoundtrack = new Audio('audio/mainSoundtrack.mp3');
 
 //images
 let image = document.getElementById('spaceship');
@@ -25,6 +27,7 @@ let imageEnemyBullet = document.getElementById('bulletEnemy');
 let imageEnemy = document.getElementById('enemy');
 let imageShield = document.getElementById('shield');
 let imageFire = document.getElementById('fire');
+let imageSpeed = document.getElementById('thunder');
 
 //buttons
 let buttonResume = document.getElementById('gameButtonResume');
@@ -96,7 +99,7 @@ function loop() {
   adjustForFramerate();
 
   contentWindowH = Number(window.innerHeight);
-  contentWindowW = Number(window.innerWidth);
+  //contentWindowW = Number(window.innerWidth);
   //resize
   checkWindowSize();
 
@@ -122,7 +125,7 @@ window.onfocus = function() {
 //movement is adjusted based on the players screen refresh rate
 function adjustForFramerate() {
   globalMovementAdjust = ( 100 - ( ( currentFramerate * 88 ) / 100 ) + 100 ) * 0.01; // we calculate the multiplier here
-  globalSpeed = 10 * globalMovementAdjust;
+  globalSpeed = archy.speed * globalMovementAdjust;
   globalEnemySpeed = levelArray[globalLevelNumber].levelEnemySpeed * globalMovementAdjust;
   globalBulletSpeed = 16 * globalMovementAdjust;
   globalCollectibleSpeed = levelArray[globalLevelNumber].levelCollectibleSpeed * globalMovementAdjust;
@@ -180,16 +183,22 @@ function playAudio(audioID) {
   var audio0 = new Audio('audio/bullet.mp3');
   var audio1 = new Audio('audio/shieldCollect.mp3');
   var audio2 = new Audio('audio/shotincCollect.mp3');
-  var audio3 = new Audio('audio/explosion.mp3');
+  var audio3 = new Audio('audio/pickup.mp3');
+  var audio4 = new Audio('audio/speedIncrease.mp3');
   if (audioID == 'shoot') {
     audio0.play();
-  } else if (audioID == 'lvlup') {
+  } else if (audioID == 'shield') {
     audio1.play();
-  } else if (audioID == 'pickup') {
+  } else if (audioID == 'fire') {
     audio2.play();
   } else if (audioID == 'explode') {
     audio3.play();
-  }
+  } else if (audioID == 'speed') {
+    audio4.play();
+  } else if (audioID == 'soundtrack') {
+    audioSoundtrack = new Audio('audio/mainSoundtrack.mp3');
+    audioSoundtrack.play();
+  } 
 }
 
 //initial shoot function
@@ -259,10 +268,13 @@ function collectibleMovement() {
       if (collectibleArray[i].type == 'shield') {
         archy.hp += 10;
         mainOut(0);
-        playAudio('lvlup');
+        playAudio('shield');
       } else if (collectibleArray[i].type == 'fire') {
         archy.decreaseCooldown(10);
-        playAudio('pickup');
+        playAudio('fire');
+      } else if (collectibleArray[i].type == 'speedInc') {
+        archy.speedIncrease(0.5);
+        playAudio('speed');
       }
       collectibleArray.splice(i, 1);
     } 
@@ -293,6 +305,9 @@ function generateCollectible() {
   let colType;
   if (typeToSpawn == 'shield') {
     colType = new Collectible('shield');
+    typeToSpawn = 'speedInc';
+  } else if (typeToSpawn == 'speedInc') {
+    colType = new Collectible('speedInc');
     typeToSpawn = 'fire';
   } else {
     colType = new Collectible('fire');
@@ -370,23 +385,11 @@ function collision(X, Y, array, hitboxOffset, hitboxOffset2, multiObject, isAgai
 }
 
 function levelHandler() {
-  if (globalLevelNumber != 9) {
-    bossLock = false;
-    isBossStage = false;
-    if (playerScore < levelArray[globalLevelNumber].levelScoreLimit) {
-      //keep enemies moving
-      enemyMovement();
-    } else {
-      levelCleared();
-    }
+  if (playerScore < levelArray[globalLevelNumber].levelScoreLimit) {
+    //keep enemies moving
+    enemyMovement();
   } else {
-    isBossStage = true;
-    if (enemyArray[0].hp != 0) {
-      //keep enemies moving
-      enemyMovement();
-    } else {
-      levelCleared();
-    }
+    levelCleared();
   }
 }
 
@@ -420,19 +423,19 @@ function levelGenHandler(stageDef, amountOfLevels) {
   let adjscrLevel = 10;
   let adjscrLimit = 50;
   //#
-  for (let i=0; i < amountOfLevels; i++) {
+  for (let i=1; i < amountOfLevels+1; i++) {
     if ( i != 0 && (i % 10) == 0 ) {
-      adjbossHP += 500;
+      adjenemyImg = imageEnemy;
     }
     if ( i != 0 && (i % stageDef) == 0 ) {
-      adjenemyHp += 10;
+      adjenemyHp += 5;
       adjenemySpeed += 0.5;
-      adjenemyDelay *= 0.9;
-      adjenemyDmg += 5;
-      adjenemyShtFreq *= 0.9;
-      adjarchyDmg += 5;
+      adjenemyDelay *= 0.95;
+      adjenemyDmg += 2;
+      adjenemyShtFreq *= 0.95;
+      adjarchyDmg += 2;
       adjscrLevel += 20;
-      adjscrLimit *= 2;
+      adjscrLimit += 500;
     }
     level = new Level(adjenemyHp, adjenemySpeed, adjenemyDelay, adjbossHP, adjcltDelay, adjcltSpeed, adjenemyImg, adjenemyDmg, adjenemyShtFreq, adjarchyDmg, adjscrLevel, adjscrLimit);
     levelArray.push(level);
@@ -543,6 +546,15 @@ class Collectible {
         40
       );
       this.posY += globalCollectibleSpeed;
+    } else if (this.type == 'speedInc') {
+      ctx.drawImage(
+        imageSpeed,
+        this.posX,
+        this.posY,
+        40,
+        40
+      );
+      this.posY += globalCollectibleSpeed;
     }
   }
 }
@@ -554,6 +566,7 @@ class Spaceship {
     this.posY = canvasHeight - 60;
     this.hp = 100;
     this.bulletCooldown = 300;
+    this.speed = 10;
   }
   move() {
     ctx.drawImage(
@@ -588,6 +601,13 @@ class Spaceship {
       return true;
     }
   }
+  speedIncrease(value) {
+    if (this.speed <= 30 && (this.speed+value) <= 30) {
+      this.speed += Number(value);
+    } else {
+      return true;
+    }
+  }
 }
 
 //event listener to switch move variables on keydown
@@ -614,7 +634,7 @@ if (currentlyRunning == true) {  //only allow moving when the game actually runs
       moveD = false;
     }
     if (event.code == 'ArrowLeft') {
-    moveL = false;
+      moveL = false;
     }
     if (event.code == 'ArrowRight') {
       moveR = false;
@@ -645,6 +665,7 @@ if (currentlyRunning == true) {
     if (event.code == 'Escape') {
       gameStop();
       document.getElementById("gameScreen").style.display = 'block';
+      audioSoundtrack.pause();
     }
   });
 }
@@ -658,13 +679,14 @@ buttonExit.onclick = function() {
 buttonResume.onclick = function() {
   document.getElementById("gameScreen").style.display = 'none';
   gameStart();
+  audioSoundtrack.play();
 }
 
 //generate new Archy (spaceship)
 let archy = new Spaceship();
 
 //gen levels
-levelGenHandler(2, 100);
+levelGenHandler(2, 50);
 
 //main loop
 loop();
