@@ -1,24 +1,27 @@
 <!--
 Last Author: K1llf0rce
-Date: 01.06.2021
+Date: 20.06.2021
 -->
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/game.css">
   <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
+  <script src="js/jquery/jquery-3.3.1.slim.min.js"></script>
+  <script src="js/bootstrap/bootstrap.min.js"></script>
   <title>ARCH.EXE</title>
 </head>
 
 <body>
-  <div id="container">
-    <header>
-      <nav class="navbar navbar-expand-sm bg-dark">
-        <div class="collapse navbar-collapse" id="main-navigation">
-          <ul class="navbar-nav">
+  <header>
+    <div class="pos-f-t">
+      <div class="collapse" id="navbarToggleExternalContent">
+        <div class="bg-dark p-4">
+          <ul class="nav justify-content-center">
             <li class="nav-item">
               <a class="nav-link" href="index.html">Home</a>
             </li>
@@ -30,12 +33,32 @@ Date: 01.06.2021
             </li>
           </ul>
         </div>
+      </div>
+      <nav class="navbar navbar-dark bg-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent"
+          aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
       </nav>
-    </header>
-    <section id="section"></section>
+    </div>
+  </header>
+  <div id="mainContainer2">  
+    <div id="creditsContainer">
+      <h1 id="creditsTitle">Who are the people behind Arch.exe?</h1>
+      <div id="creditsPeople">
+        <h1>Project-Leader:</h1>
+        <p>Esmir Lisic (Ezmo)</p>
+        <h1>Frontend-Devs:</h1>
+        <p>Maid Fazlic (Mercyless)</p>
+        <p>Tommy Lee Duong (BunBoy)</p>
+        <h1>Backend-Devs:</h1>
+        <p>Fabian Teppan (K1llf0rce)</p>
+        <p>Felix Slama (FireJava)</p>
+        <h1>Soundtrack:</h1>
+        <p>Jamie Berger (danke brudi)</p>
+      </div>
+    </div>
   </div>
-  <script src="js/jquery/jquery-3.3.1.slim.min.js"></script>
-  <script src="js/bootstrap/bootstrap.bundle.js"></script>
   <script src="js/main.js"></script>
 </body>
 

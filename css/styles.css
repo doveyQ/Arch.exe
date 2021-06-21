@@ -1,8 +1,6 @@
 /* 
 Last Author: Mercy
-Date: 02.06.2021
-
-!TEMPORARY FOR DEV WORK AND EASE OF USE!
+Date: 21.06.2021
 
 */
 @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
@@ -26,6 +24,16 @@ body {
     color: white;
 }
 
+#mainContainer2 {
+    width: 100%;
+    height: 100%;
+    background-image: url(../img/codebackground.gif);
+    margin: 0 auto;
+    padding: 10px;
+    position: fixed;
+    color: white;
+}
+
 .center-h1-nav {
     margin: 0 auto;
 }
@@ -34,8 +42,8 @@ body {
     font-size: 2em;
     font-family: 'VT323', sans-serif;
     letter-spacing: 0.3em;
-    
 }
+
 .nav-item {
     margin-right: 2em;
 }
@@ -50,6 +58,23 @@ body {
 
 p-2, h1 {
     color: #141414;
+}
+
+.centerit {
+    text-align: center;
+}
+
+
+
+.controllsheader {
+    text-align: center;
+    text-shadow: black;
+    font-size: 2.8em;
+    margin-top: 3em;
+}
+
+.colorheader {
+    color:#0fb784;
 }
 
 /*  NEW CSS */
@@ -75,6 +100,43 @@ p-2, h1 {
                          "footer-right";
 }
 
+#creditsContainer {
+    margin: 0 auto;
+    width: 60em;
+    text-align: center;
+    margin-top: 50px;
+    border: solid white;
+    background-color: #4f4f4f;
+}
+
+#creditsTitle {
+    font-size: 50px;
+    color:white;
+    font-weight: bold;
+    padding: 10px;
+}
+
+#creditsPeople h1 {
+    color:#0fb784;
+    text-decoration: underline;
+}
+
+#creditsPeople p {
+    font-size: 22px;
+    font-family: Glegoo;
+}
+
+#bigCaption {
+    width: 60em;
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 5em;
+}
+
+#bigCaption h1 {
+    font-family: 'VT323', sans-serif;
+    font-size: 160px;
+}
 
 /*Hier der Abschnitt für zB tablets im Querformat-Modus*/
 @media only screen and (min-width: 40em){

@@ -6,7 +6,9 @@ Date: 06.06.2021
 #mainCanvas  {
     display: block;
     border: solid white;
-    background-color: grey;
+    background-image: url(../img/Backgrounds/gameBackground0.jpg);
+    background-size: cover;
+    background-blend-mode:lighten;
     margin: 0 auto;
     width: 1600px;
     height: 960px;
@@ -18,7 +20,8 @@ Date: 06.06.2021
     left: 50%;
     -ms-transform: translate(-50%);
     transform: translate(-50%);
-    width: 20em;
+    max-width: 95em;
+    min-width: 65em;
     margin: 0 auto;
     margin-top: 10px;
     position: absolute;
@@ -27,9 +30,10 @@ Date: 06.06.2021
 
 #playerScoreOut {
     font-size: 50px;
+    padding: 10px;
 }
 
-#spaceship, #bullet1, #enemy, #shield, #coin {
+#spaceship, #bulletArchy, #bulletEnemy, #enemy, #shield, #fire, #thunder {
     display: none;
 }
 
@@ -89,14 +93,14 @@ Date: 06.06.2021
 
 #gameButtonResume:hover {
     border-radius: 30px;
-    border-color: greenyellow;
-    color: greenyellow;
+    border-color: yellow;
+    color: yellow;
     transition: 50ms;
 }
 
 #gameButtonExit:hover {
     border-radius: 30px;
-    border-color:greenyellow;
-    color: greenyellow;
+    border-color: yellow;
+    color: yellow;
     transition: 50ms;
 }
