@@ -21,6 +21,7 @@ Date: 06.06.2021
     -ms-transform: translate(-50%);
     transform: translate(-50%);
     max-width: 95em;
+    min-width: 65em;
     margin: 0 auto;
     margin-top: 10px;
     position: absolute;
