@@ -349,7 +349,7 @@ function enemyMovement() {
 //output codes to stat display
 function mainOut(event) {
   if (event == 0) {
-    scoreOutput.innerHTML = "Score: " + playerScore + "<br>To Reach: " + levelArray[globalLevelNumber].levelScoreLimit  + "<br>HP: " + archy.hp;
+    scoreOutput.innerHTML = "Level " + (globalLevelNumber+1) + " | Score: " + playerScore + " | To Reach: " + levelArray[globalLevelNumber].levelScoreLimit  + " | HP: " + archy.hp;
   } else if (event == 1) {
     scoreOutput.innerHTML = "Level " + globalLevelNumber + " cleared!";
   } else if (event == 3) {
@@ -692,7 +692,7 @@ levelGenHandler(2, 50);
 loop();
 
 //show stat screen once
-scoreOutput.innerHTML = "Score: " + playerScore + "<br>To Reach: " + levelArray[globalLevelNumber].levelScoreLimit  + "<br>HP: " + archy.hp;
+scoreOutput.innerHTML = "Level " + (globalLevelNumber+1) + " | Score: " + playerScore + " | To Reach: " + levelArray[globalLevelNumber].levelScoreLimit  + " | HP: " + archy.hp;
 
 //enemy gen
 mainEnemyLoop = setInterval(generateEnemy, levelArray[globalLevelNumber].levelEnemyDelay);
